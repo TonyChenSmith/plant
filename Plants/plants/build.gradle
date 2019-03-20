@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1 alpha"
     }
     buildTypes {
         release {
@@ -20,5 +20,6 @@ android {
 }
 
 dependencies {
+	compile 'com.android.support:appcompat-v7:+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
