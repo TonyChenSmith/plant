@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.0"
 
     defaultConfig {
-        applicationId "org.tonygatins.tonysmith.xjikll.plants"
+        applicationId "org.tonygatins.tonysmith.xjikll.plant"
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
