@@ -25,6 +25,8 @@ package org.tonygatins.tonysmith.xjikll.plant;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.BackgroundDrawable;
+import android.graphics.BitmapFactory;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -33,5 +35,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+		findViewById(R.id.mainLinearLayout).setBackground(new BackgroundDrawable(BitmapFactory.decodeResource(getResources(),R.mipmap.test)));
     }
 }

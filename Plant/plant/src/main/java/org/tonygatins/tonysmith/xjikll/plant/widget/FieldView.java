@@ -21,42 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.tonygatins.tonysmith.xjikll.plant.context.drawable;
+package org.tonygatins.tonysmith.xjikll.plant.widget;
 
-import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.content.Context;
+import android.util.AttributeSet;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 
 /**
- * 背景用的图片，在这里做出一定的修改。
+ * 田块的视图实现。
  * @author TonyChenSmith
  */
-public final class BackgroundDrawable extends Drawable
+public final class FieldView extends View
 {
-
-	@Override
-	public void draw(Canvas p1)
+	/**
+	 * 构造一个田视图。没有额外属性。
+	 */
+	public FieldView(Context context,AttributeSet attrs)
 	{
-		// TODO: Implement this method
+		super(context,attrs);
 	}
 
 	@Override
-	public void setAlpha(int p1)
+	protected void onMeasure(int widthMeasureSpec,int heightMeasureSpec)
 	{
 		// TODO: Implement this method
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 	@Override
-	public void setColorFilter(ColorFilter p1)
+	protected void onDraw(Canvas canvas)
 	{
 		// TODO: Implement this method
+		super.onDraw(canvas);
 	}
-
-	@Override
-	public int getOpacity()
-	{
-		// TODO: Implement this method
-		return 0;
-	}
-	
 }
