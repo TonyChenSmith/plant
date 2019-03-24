@@ -25,16 +25,18 @@ package org.tonygatins.tonysmith.xjikll.plant.graphics.drawable;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 /**
  * 背景用的图片，在这里做出一定的修改。
- * @author TonyChenSmith
+ * @author Tony Chen Smith
  */
-public final class BackgroundDrawable extends Drawable
+public class BackgroundDrawable extends Drawable
 {
 	//传入的bitmap
 	private final Bitmap resource;
@@ -53,11 +55,26 @@ public final class BackgroundDrawable extends Drawable
 	@Override
 	public void draw(Canvas canvas)
 	{
-		// TODO: Implement this method
 		Rect env=getBounds();
 		
-		//两个的大小
-		int resWidth=resource.getWidth(),resHeight=resource.getHeight(),envWidth=env.width(),envHeight=env.height();
+		//环境长宽
+		int envWidth=env.width(),envHeight=env.height();
+		
+		// TODO: Implement this method
+		if(resource.isRecycled())
+		{
+			Paint pen=new Paint();
+			pen.setColor(Color.WHITE);
+			canvas.drawPaint(pen);
+			return;
+		}
+		else
+		{
+			resource.prepareToDraw();
+		}
+		
+		//图片的大小
+		int resWidth=resource.getWidth(),resHeight=resource.getHeight();
 		
 		//界面过大时标记的位置。
 		int resultY=0,resultX=0,endX = resWidth,endY=resHeight;
@@ -186,4 +203,19 @@ public final class BackgroundDrawable extends Drawable
 		return PixelFormat.OPAQUE;
 	}
 	
+	/**
+	 * 回收bitmap
+	 */
+	public void recycle()
+	{
+		resource.recycle();
+	}
+	
+	/**
+	 * 子类获得bitmap的方法。
+	 */
+	protected Bitmap get()
+	{
+		return resource;
+	}
 }

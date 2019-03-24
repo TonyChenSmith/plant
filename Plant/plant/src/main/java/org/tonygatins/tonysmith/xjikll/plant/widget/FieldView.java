@@ -23,17 +23,23 @@
  */
 package org.tonygatins.tonysmith.xjikll.plant.widget;
 
-import android.view.View;
 import android.content.Context;
-import android.util.AttributeSet;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.view.View;
+import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
 
 /**
  * 田块的视图实现。
- * @author TonyChenSmith
+ * @author Tony Chen Smith
  */
 public final class FieldView extends View
 {
+	//图片的大小
+	private final Rect src=new Rect();
+	
 	/**
 	 * 构造一个田视图。没有额外属性。
 	 */
@@ -41,18 +47,65 @@ public final class FieldView extends View
 	{
 		super(context,attrs);
 	}
-
+	
+	/**
+	 * 重写测定方法。
+	 */
 	@Override
 	protected void onMeasure(int widthMeasureSpec,int heightMeasureSpec)
 	{
 		// TODO: Implement this method
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		//长宽的模式
+		int widthMode=MeasureSpec.getMode(widthMeasureSpec),heightMode=MeasureSpec.getMode(heightMeasureSpec);
+		
+		//长宽的外界大小
+		int envWidth=MeasureSpec.getSize(widthMeasureSpec),envHeight=MeasureSpec.getSize(heightMeasureSpec);
+		
+		//结果长宽
+		int resultWidth,resultHeight;
+		
+		if(widthMode==MeasureSpec.EXACTLY)
+		{
+			resultWidth=envWidth;
+		}
+		else
+		{
+			resultWidth=src.width();
+		}
+		
+		if(heightMode==MeasureSpec.EXACTLY)
+		{
+			resultHeight=envHeight;
+		}
+		else
+		{
+			resultHeight=src.height();
+		}
+		
+		setMeasuredDimension(resultWidth,resultHeight);
 	}
 
+	/**
+	 * 绘制方法（现在因为没有植株不进行其他操作）
+	 */
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
 		// TODO: Implement this method
 		super.onDraw(canvas);
+	}
+
+	/**
+	 * 特殊的设置背景的方法。
+	 */
+	@Override
+	public void setBackground(Drawable background)
+	{
+		// TODO: Implement this method
+		if(background instanceof FieldBackgroundDrawable)
+		{
+			src.set(((FieldBackgroundDrawable)background).getRect());
+		}
+		super.setBackground(background);
 	}
 }
