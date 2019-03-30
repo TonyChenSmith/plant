@@ -55,7 +55,8 @@ public class BackgroundDrawable extends Drawable
 	@Override
 	public void draw(Canvas canvas)
 	{
-		Rect env=getBounds();
+		//曾用过程
+		/*Rect env=getBounds();
 		
 		//环境长宽
 		int envWidth=env.width(),envHeight=env.height();
@@ -173,6 +174,13 @@ public class BackgroundDrawable extends Drawable
 				return;
 			}
 		}
+		
+		*/
+		
+		//realSize实际大小矩形
+		final Rect realSize=getBounds();
+		
+		final int[] envSize=new int[]{realSize.width(),realSize.height()};
 	}
 
 	/**

@@ -74,4 +74,26 @@ public final class FieldBackgroundDrawable extends BackgroundDrawable
 			return;
 		}
 	}
+
+	/**
+	 * 状态改变时的处理方法。
+	 */
+	@Override
+	protected boolean onStateChange(int[] state)
+	{
+		// TODO: Implement this method
+		boolean result=super.onStateChange(state);
+		for(int localState : state)
+		{
+			switch(localState)
+			{
+				case android.R.attr.state_checked:
+					
+				default:
+					continue;
+			}
+		}
+		
+		return true;
+	}
 }
