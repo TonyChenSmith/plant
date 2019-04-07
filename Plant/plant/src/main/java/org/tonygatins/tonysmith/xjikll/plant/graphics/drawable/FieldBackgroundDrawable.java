@@ -86,7 +86,7 @@ public final class FieldBackgroundDrawable extends BackgroundDrawable
 			return;
 		}
 	}
-
+	
 	/**
 	 * 状态改变时的处理方法。
 	 * @param state 代表状态id的数组对象。
@@ -101,18 +101,28 @@ public final class FieldBackgroundDrawable extends BackgroundDrawable
 			switch(localState)
 			{
 				case android.R.attr.state_pressed:
+				case android.R.attr.state_long_pressable:
 					pen.reset();
 					pen.setAlpha(255);
 					pen.setColor(Color.WHITE);
 					return true;
 				default:
-					pen.reset();
-					pen.setAlpha(255);
-					pen.setColor(Color.BLACK);
-					return true;
+					continue;
 			}
 		}
 		return false;
 	}
-
+	
+	/**
+	 * 重新设置刷新参数。
+	 * @return 设置完刷新参数后的drawable。
+	 */
+	public Drawable reset()
+	{
+		pen.reset();
+		pen.setAlpha(255);
+		pen.setAntiAlias(true);
+		pen.setColor(Color.BLACK);
+		return this;
+	}
 }

@@ -31,6 +31,11 @@ import android.util.AttributeSet;
 import android.view.View;
 import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
 import android.view.View.OnClickListener;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import org.tonygatins.tonysmith.xjikll.plant.process.TimingRefresher;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * 田块的视图实现。
@@ -116,26 +121,6 @@ public final class FieldView extends View
 		}
 		super.setBackground(background);
 	}
-
-	private boolean isContinue=true;
-	private Thread waiter=new Thread(new Runnable(){
-
-		@Override
-		public void run()
-		{
-			// TODO: Implement this method
-			try
-			{
-				Thread.sleep(5000);
-			}
-			catch(InterruptedException e)
-			{}
-			finally
-			{
-				isContinue=true;
-			}
-		}
-	});
 	
 	/**
 	 * 重写状态获得方法。
@@ -145,11 +130,17 @@ public final class FieldView extends View
 	{
 		// TODO: Implement this method
 		super.drawableStateChanged();
-		if(!waiter.isAlive()&&isContinue&&getBackground().setState(getDrawableState()))
+		if(getBackground().setState(getDrawableState()))
 		{
-			isContinue=false;
-			waiter.start();
 			invalidate();
+			if(control!=null&&!control.isDone())
+			{
+				control.cancel(true);
+			}
+			control=TimingRefresher.submitInvalidate(this);
 		}
 	}
+	
+	//刷新线程的结果
+	private ScheduledFuture control=null;
 }

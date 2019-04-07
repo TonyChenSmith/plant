@@ -32,6 +32,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.BackgroundDrawable;
 import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
+import org.tonygatins.tonysmith.xjikll.plant.process.TimingRefresher;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+		TimingRefresher.initTimingRefreaher(this);
 		supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity
 	{
 		// TODO: Implement this method
 		super.onDestroy();
+		TimingRefresher.stop();
 		background.recycle();
 		field.recycle();
 	}
