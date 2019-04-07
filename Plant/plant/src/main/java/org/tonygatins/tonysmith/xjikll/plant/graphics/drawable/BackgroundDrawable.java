@@ -31,6 +31,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import java.util.Objects;
 
 /**
  * 背景用的图片，在这里做出一定的修改。
@@ -40,31 +41,40 @@ public class BackgroundDrawable extends Drawable
 {
 	//传入的bitmap
 	private final Bitmap resource;
-	
+	private final Paint pen=new Paint();
+
 	/**
 	 * 用bitmap构造一个对象。
+	 * @param resource bitmap对象。
 	 */
 	public BackgroundDrawable(Bitmap resource)
 	{
-		this.resource=resource;
+		//出错报告
+		this.resource = Objects.requireNonNull(resource);
+		//图像抖动
+		pen.setDither(true);
+		//不抗锯齿
+		pen.setAntiAlias(false);
+		//透明度满
+		pen.setAlpha(255);
 	}
 
 	/**
 	 * 绘图过程。
+	 * @param canvas 系统给的画布对象。
 	 */
 	@Override
 	public void draw(Canvas canvas)
 	{
-		//曾用过程
-		/*Rect env=getBounds();
+
+		//realSize实际大小矩形对象
+		final Rect realSize=getBounds();
+		final int[] envSize=new int[]{realSize.width(),realSize.height()};
 		
-		//环境长宽
-		int envWidth=env.width(),envHeight=env.height();
-		
-		// TODO: Implement this method
+		//如果背景图被回收了
 		if(resource.isRecycled())
 		{
-			Paint pen=new Paint();
+			pen.reset();
 			pen.setColor(Color.WHITE);
 			canvas.drawPaint(pen);
 			return;
@@ -75,116 +85,128 @@ public class BackgroundDrawable extends Drawable
 		}
 		
 		//图片的大小
-		int resWidth=resource.getWidth(),resHeight=resource.getHeight();
+		final int[] resSize=new int[]{resource.getWidth(),resource.getHeight()};
 		
-		//界面过大时标记的位置。
-		int resultY=0,resultX=0,endX = resWidth,endY=resHeight;
+		//source源矩形，limit限制矩形
+		final Rect source=new Rect();
+		final Rect limit=new Rect();
 		
-		//记录变化量
-		int mark = 0;
-		
-		//printer打印限制，source截图限制
-		Rect printer=new Rect(),source=new Rect(resultX,resultY,endX,endY);
-		
-		if(envWidth<=resWidth)
+		//图片宽于提供的环境宽
+		if(resSize[0]>=envSize[0])
 		{
-			if(envHeight<=resHeight)
+			//图片高于提供的环境高
+			if(resSize[1]>=envSize[1])
 			{
-				canvas.drawBitmap(resource,env,env,null);
+				source.set(0,0,envSize[0],envSize[1]);
+				limit.set(0,0,envSize[0],envSize[1]);
+				canvas.drawBitmap(resource,source,limit,pen);
 				return;
 			}
-			else
+			else //图片高低于环境高
 			{
-				do
+				int heightTop=0,heightBottom=resSize[1];
+				source.set(0,0,envSize[0],resSize[1]);
+				while(true)
 				{
-					printer.set(resultX,resultY,envWidth,endY);
-					canvas.drawBitmap(resource,source,printer,null);
-					if(endY==envHeight)
+					limit.set(0,heightTop,envSize[0],heightBottom);
+					canvas.drawBitmap(resource,source,limit,pen);
+					
+					if(heightBottom==envSize[1])
 					{
-						break;
+						return;
 					}
-					resultY=resultY+resHeight;
-					endY=endY+resHeight;
-					if(endY>envHeight) {
-						source.set(0,0,envWidth,envHeight-endY+resHeight);
-						endY=envHeight;
+					
+					//修改偏移
+					heightTop=heightTop+resSize[1];
+					heightBottom=heightBottom+resSize[1];
+					
+					if(heightBottom>envSize[1])
+					{
+						source.set(0,0,envSize[0],resSize[1]-(heightBottom-envSize[1]));
+						heightBottom=envSize[1];
 					}
-				} while(true);
-				return;
+				}
 			}
 		}
-		else
+		else //图片宽低于提供的环境宽
 		{
-			if(envHeight<=resHeight)
+			//图片高于提供的环境高
+			if(resSize[1]>=envSize[1])
 			{
-				do
+				int widthLeft=0,widthRight=resSize[1];
+				source.set(0,0,resSize[0],envSize[1]);
+				while(true)
 				{
-					printer.set(resultX,resultY,endX,envHeight);
-					canvas.drawBitmap(resource,source,printer,null);
-					if(endX==envWidth)
+					limit.set(widthLeft,0,widthRight,envSize[1]);
+					canvas.drawBitmap(resource,source,limit,pen);
+
+					if(widthRight==envSize[0])
 					{
-						break;
+						return;
 					}
-					resultX=resultX+resWidth;
-					endX=endX+resWidth;
-					if(endX>envWidth) {
-						source.set(0,0,envWidth-endX+resWidth,envHeight);
-						endX=envWidth;
+
+					//修改偏移
+					widthLeft=widthLeft+resSize[0];
+					widthRight=widthRight+resSize[0];
+
+					if(widthRight>envSize[0])
+					{
+						source.set(0,0,resSize[0]-(widthRight-envSize[0]),envSize[1]);
+						widthRight=envSize[0];
 					}
-				} while(true);
-				return;
+				}
 			}
-			else
+			else //图片高低于环境高
 			{
-				mark=resHeight;
-				do
+				int heightTop=0,heightBottom=resSize[1];
+				int markY=resSize[1];
+				source.set(0,0,resSize[0],resSize[1]);
+				while(true)
 				{
-					do
+					int widthLeft=0,widthRight=resSize[1];
+					while(true)
 					{
-						printer.set(resultX,resultY,endX,endY);
-						canvas.drawBitmap(resource,source,printer,null);
-						if(endX==envWidth)
+						limit.set(widthLeft,heightTop,widthRight,heightBottom);
+						canvas.drawBitmap(resource,source,limit,pen);
+
+						if(widthRight==envSize[0])
 						{
 							break;
 						}
-						resultX=resultX+resWidth;
-						endX=endX+resWidth;
-						if(endX>envWidth) {
-							source.set(0,0,envWidth-endX+resWidth,mark);
-							endX=envWidth;
+
+						//修改偏移
+						widthLeft=widthLeft+resSize[0];
+						widthRight=widthRight+resSize[0];
+
+						if(widthRight>envSize[0])
+						{
+							source.set(0,0,resSize[0]-(widthRight-envSize[0]),markY);
+							widthRight=envSize[0];
 						}
-					} while(true);
+					}
 					
-					if(endY==envHeight)
+					if(heightBottom==envSize[1])
 					{
-						break;
+						return;
 					}
-					
-					resultX=0;
-					endX=resWidth;
-					source.set(0,0,resWidth,resHeight);
-					
-					resultY=resultY+resHeight;
-					endY=endY+resHeight;
-					if(endY>envHeight) {
-						source.set(0,0,envWidth,mark=envHeight-endY+resHeight);
-						endY=envHeight;
+
+					//修改偏移
+					heightTop=heightTop+resSize[1];
+					heightBottom=heightBottom+resSize[1];
+
+					if(heightBottom>envSize[1])
+					{
+						source.set(0,0,resSize[0],markY=resSize[1]-(heightBottom-envSize[1]));
+						heightBottom=envSize[1];
 					}
-				} while(true);
-				return;
+				}
 			}
 		}
-		
-		*/
-		
-		//realSize实际大小矩形
-		final Rect realSize=getBounds();
-		
-		final int[] envSize=new int[]{realSize.width(),realSize.height()};
 	}
 
 	/**
 	 * 特定用途，不需要实现。
+	 * @param p1 透明度大小。
 	 */
 	@Override
 	public void setAlpha(int p1)
@@ -194,6 +216,7 @@ public class BackgroundDrawable extends Drawable
 
 	/**
 	 * 特殊用途，不需要实现。
+	 * @param p1 色彩对象。
 	 */
 	@Override
 	public void setColorFilter(ColorFilter p1)
@@ -203,6 +226,7 @@ public class BackgroundDrawable extends Drawable
 
 	/**
 	 * 返回透明度，在API Q弃用。
+	 * @return 一个PixelFormat枚举对象。
 	 */
 	@Override
 	public int getOpacity()
@@ -210,17 +234,18 @@ public class BackgroundDrawable extends Drawable
 		// TODO: Implement this method
 		return PixelFormat.OPAQUE;
 	}
-	
+
 	/**
-	 * 回收bitmap
+	 * 回收bitmap。
 	 */
 	public void recycle()
 	{
 		resource.recycle();
 	}
-	
+
 	/**
 	 * 子类获得bitmap的方法。
+	 * @return 初始化时得到的bitmap对象。
 	 */
 	protected Bitmap get()
 	{

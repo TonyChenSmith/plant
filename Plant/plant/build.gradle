@@ -19,6 +19,13 @@ android {
     }
 }
 
+ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi-v7a', 'x86'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+    }
+
+
 dependencies {
 	compile 'com.android.support:appcompat-v7:+'
     compile fileTree(dir: 'libs', include: ['*.jar'])

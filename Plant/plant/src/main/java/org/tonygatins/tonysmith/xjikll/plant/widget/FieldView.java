@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
+import android.view.View.OnClickListener;
 
 /**
  * 田块的视图实现。
@@ -39,17 +40,21 @@ public final class FieldView extends View
 {
 	//图片的大小
 	private final Rect src=new Rect();
-	
+
 	/**
 	 * 构造一个田视图。没有额外属性。
+	 * @param context 系统提供的context。
+	 * @param attrs 系统给的属性列表。
 	 */
 	public FieldView(Context context,AttributeSet attrs)
 	{
 		super(context,attrs);
 	}
-	
+
 	/**
 	 * 重写测定方法。
+	 * @param widthMeasureSpec 宽度测量值。
+	 * @param heightMeasureSpec 高度测量值。
 	 */
 	@Override
 	protected void onMeasure(int widthMeasureSpec,int heightMeasureSpec)
@@ -57,36 +62,38 @@ public final class FieldView extends View
 		// TODO: Implement this method
 		//长宽的模式
 		int widthMode=MeasureSpec.getMode(widthMeasureSpec),heightMode=MeasureSpec.getMode(heightMeasureSpec);
-		
+
 		//长宽的外界大小
 		int envWidth=MeasureSpec.getSize(widthMeasureSpec),envHeight=MeasureSpec.getSize(heightMeasureSpec);
-		
+
 		//结果长宽
 		int resultWidth,resultHeight;
-		
-		if(widthMode==MeasureSpec.EXACTLY)
+
+		if(widthMode == MeasureSpec.EXACTLY)
 		{
-			resultWidth=envWidth;
+			resultWidth = envWidth;
 		}
 		else
 		{
-			resultWidth=src.width();
+			resultWidth = src.width()+2;
 		}
-		
-		if(heightMode==MeasureSpec.EXACTLY)
+
+		if(heightMode == MeasureSpec.EXACTLY)
 		{
-			resultHeight=envHeight;
+			resultHeight = envHeight;
 		}
 		else
 		{
-			resultHeight=src.height();
+			resultHeight = src.height()+2;
 		}
-		
+
+		//设置高宽
 		setMeasuredDimension(resultWidth,resultHeight);
 	}
 
 	/**
 	 * 绘制方法（现在因为没有植株不进行其他操作）
+	 * @param 系统给的画布对象。
 	 */
 	@Override
 	protected void onDraw(Canvas canvas)
@@ -97,6 +104,7 @@ public final class FieldView extends View
 
 	/**
 	 * 特殊的设置背景的方法。
+	 * @param background 背景图片的对象。
 	 */
 	@Override
 	public void setBackground(Drawable background)
@@ -107,5 +115,41 @@ public final class FieldView extends View
 			src.set(((FieldBackgroundDrawable)background).getRect());
 		}
 		super.setBackground(background);
+	}
+
+	private boolean isContinue=true;
+	private Thread waiter=new Thread(new Runnable(){
+
+		@Override
+		public void run()
+		{
+			// TODO: Implement this method
+			try
+			{
+				Thread.sleep(5000);
+			}
+			catch(InterruptedException e)
+			{}
+			finally
+			{
+				isContinue=true;
+			}
+		}
+	});
+	
+	/**
+	 * 重写状态获得方法。
+	 */
+	@Override
+	protected void drawableStateChanged()
+	{
+		// TODO: Implement this method
+		super.drawableStateChanged();
+		if(!waiter.isAlive()&&isContinue&&getBackground().setState(getDrawableState()))
+		{
+			isContinue=false;
+			waiter.start();
+			invalidate();
+		}
 	}
 }
