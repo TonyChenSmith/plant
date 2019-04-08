@@ -28,7 +28,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 田块按钮的背景实现。
@@ -36,10 +38,28 @@ import android.graphics.drawable.Drawable;
  */
 public final class FieldBackgroundDrawable extends BackgroundDrawable
 {
+	//错误大小画笔
+	private static final Paint ERROR_SIZE_PAINT =new Paint();
+	
+	/**
+	 * 默认背景画笔。
+	 */
+	public static final Paint DEFAULT_PAINT = new Paint();
+	
 	//图片的大小
 	private final Rect src;
 
-	private final Paint pen = new Paint();
+	//不同状态时的不同画笔。
+	private final Map<int[],Paint> statePaint = new HashMap<>();
+	
+	//初始条件列表
+	private final Map<Integer,Paint> initStates = new HashMap<>();
+	
+	//当前画笔
+	private Paint pen;
+	
+	//前次状态
+	private int[] lastStates;
 
 	/**
 	 * 用一个bitmap构造对象。
@@ -49,10 +69,7 @@ public final class FieldBackgroundDrawable extends BackgroundDrawable
 	{
 		super(resource);
 		src = new Rect(0,0,get().getWidth(),get().getHeight());
-		pen.reset();
-		pen.setAlpha(255);
-		pen.setAntiAlias(true);
-		pen.setColor(Color.BLACK);
+		pen=DEFAULT_PAINT;
 	}
 
 	/**
@@ -64,6 +81,23 @@ public final class FieldBackgroundDrawable extends BackgroundDrawable
 		return src;
 	}
 
+	/**
+	 * {@hide}
+	 * 添加状态的方法，不同状态的不同画笔。
+	 * @param state 状态ID。
+	 * @param paint 画笔对象。
+	 */
+	public void addStates(int state,Paint paint)
+	{
+		initStates.put(state,paint);
+	}
+	
+	//内部添加状态
+	private void addStates(int[] state,Paint paint)
+	{
+		statePaint.put(state,paint);
+	}
+	
 	/**
 	 * 特殊的绘制背景方法。
 	 * @param canvas 系统提供的画布对象。
@@ -79,10 +113,7 @@ public final class FieldBackgroundDrawable extends BackgroundDrawable
 		}
 		else
 		{
-			pen.reset();
-			pen.setAlpha(255);
-			pen.setColor(Color.WHITE);
-			canvas.drawPaint(pen);
+			canvas.drawPaint(ERROR_SIZE_PAINT);
 			return;
 		}
 	}
@@ -96,33 +127,73 @@ public final class FieldBackgroundDrawable extends BackgroundDrawable
 	protected boolean onStateChange(int[] state)
 	{
 		// TODO: Implement this method
-		for(int localState : state)
+		Arrays.sort(state);
+		if(Arrays.equals(state,lastStates))
 		{
-			switch(localState)
-			{
-				case android.R.attr.state_pressed:
-				case android.R.attr.state_long_pressable:
-					pen.reset();
-					pen.setAlpha(255);
-					pen.setColor(Color.WHITE);
-					return true;
-				default:
-					continue;
-			}
+			return false;
 		}
-		return false;
+		
+		Paint temp=statePaint.get(state);
+		
+		if(temp!=null)
+		{
+			pen=temp;
+			lastStates=state;
+			invalidateSelf();
+			return true;
+		}
+		else
+		{
+			int index=Arrays.binarySearch(state,android.R.attr.state_pressed);
+			if(index > -1)
+			{
+				addStates(state,initStates.get(android.R.attr.state_pressed));
+				pen=initStates.get(android.R.attr.state_pressed);
+			}
+			else
+			{
+				addStates(state,DEFAULT_PAINT);
+				pen=DEFAULT_PAINT;
+			}
+			lastStates=state;
+			invalidateSelf();
+			return true;
+		}
+	}
+	
+	//初始化默认画笔
+	static
+	{
+		DEFAULT_PAINT.reset();
+		DEFAULT_PAINT.setAlpha(255);
+		DEFAULT_PAINT.setAntiAlias(true);
+		DEFAULT_PAINT.setColor(Color.BLACK);
+		
+		ERROR_SIZE_PAINT.reset();
+		ERROR_SIZE_PAINT.setAlpha(255);
+		ERROR_SIZE_PAINT.setAntiAlias(true);
+		ERROR_SIZE_PAINT.setColor(Color.RED);
+	}
+
+	/**
+	 * 返回是否可变。
+	 * @return 永远为true
+	 */
+	@Override
+	public boolean isStateful()
+	{
+		// TODO: Implement this method
+		return true;
 	}
 	
 	/**
-	 * 重新设置刷新参数。
-	 * @return 设置完刷新参数后的drawable。
+	 * 共享信息构造方法。
+	 * @param another 另一个drawable。
 	 */
-	public Drawable reset()
+	public FieldBackgroundDrawable(FieldBackgroundDrawable another)
 	{
-		pen.reset();
-		pen.setAlpha(255);
-		pen.setAntiAlias(true);
-		pen.setColor(Color.BLACK);
-		return this;
+		super(another);
+		src=another.src;
+		initStates.putAll(another.initStates);
 	}
 }

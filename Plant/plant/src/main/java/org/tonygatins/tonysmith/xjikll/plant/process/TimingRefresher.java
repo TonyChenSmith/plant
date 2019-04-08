@@ -74,10 +74,6 @@ public final class TimingRefresher
 					public void run()
 					{
 						// TODO: Implement this method
-						if(view.getBackground() instanceof FieldBackgroundDrawable)
-						{
-							((FieldBackgroundDrawable)view.getBackground()).reset();
-						}
 						view.invalidate();
 					}
 				});

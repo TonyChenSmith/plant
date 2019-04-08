@@ -25,17 +25,15 @@ package org.tonygatins.tonysmith.xjikll.plant.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
-import android.view.View.OnClickListener;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import org.tonygatins.tonysmith.xjikll.plant.process.TimingRefresher;
 import java.util.concurrent.ScheduledFuture;
+import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
+import org.tonygatins.tonysmith.xjikll.plant.process.TimingRefresher;
 
 /**
  * 田块的视图实现。
@@ -80,7 +78,7 @@ public final class FieldView extends View
 		}
 		else
 		{
-			resultWidth = src.width()+2;
+			resultWidth = src.width() + 2;
 		}
 
 		if(heightMode == MeasureSpec.EXACTLY)
@@ -89,7 +87,7 @@ public final class FieldView extends View
 		}
 		else
 		{
-			resultHeight = src.height()+2;
+			resultHeight = src.height() + 2;
 		}
 
 		//设置高宽
@@ -115,32 +113,21 @@ public final class FieldView extends View
 	public void setBackground(Drawable background)
 	{
 		// TODO: Implement this method
+		super.setBackground(background);
+		background.setCallback(this);
 		if(background instanceof FieldBackgroundDrawable)
 		{
-			src.set(((FieldBackgroundDrawable)background).getRect());
-		}
-		super.setBackground(background);
-	}
-	
-	/**
-	 * 重写状态获得方法。
-	 */
-	@Override
-	protected void drawableStateChanged()
-	{
-		// TODO: Implement this method
-		super.drawableStateChanged();
-		if(getBackground().setState(getDrawableState()))
-		{
-			invalidate();
-			if(control!=null&&!control.isDone())
-			{
-				control.cancel(true);
-			}
-			control=TimingRefresher.submitInvalidate(this);
+			FieldBackgroundDrawable drawable=(FieldBackgroundDrawable)background;
+			
+			Paint paint=new Paint();
+			paint.setAlpha(255);
+			paint.setAntiAlias(true);
+			paint.setColor(Color.WHITE);
+			
+			drawable.addStates(android.R.attr.state_pressed,paint);
+			
+			src.set(drawable.getRect());
 		}
 	}
-	
-	//刷新线程的结果
-	private ScheduledFuture control=null;
+
 }

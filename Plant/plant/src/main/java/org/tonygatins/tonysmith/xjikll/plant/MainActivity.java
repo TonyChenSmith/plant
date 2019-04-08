@@ -58,11 +58,11 @@ public class MainActivity extends AppCompatActivity
 
 		field = new FieldBackgroundDrawable(BitmapFactory.decodeResource(getResources(),R.drawable.field));
 		findViewById(R.id.plantField1).setBackground(field);
-		findViewById(R.id.plantField2).setBackground(field);
-		findViewById(R.id.plantField3).setBackground(field);
-		findViewById(R.id.plantField4).setBackground(field);
-		findViewById(R.id.plantField5).setBackground(field);
-		findViewById(R.id.plantField6).setBackground(field);
+		findViewById(R.id.plantField2).setBackground(new FieldBackgroundDrawable(field));
+		findViewById(R.id.plantField3).setBackground(new FieldBackgroundDrawable(field));
+		findViewById(R.id.plantField4).setBackground(new FieldBackgroundDrawable(field));
+		findViewById(R.id.plantField5).setBackground(new FieldBackgroundDrawable(field));
+		findViewById(R.id.plantField6).setBackground(new FieldBackgroundDrawable(field));
 
 		findViewById(R.id.plantField1).setOnClickListener(handler);
 		findViewById(R.id.plantField2).setOnClickListener(handler);

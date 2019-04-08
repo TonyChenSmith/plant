@@ -49,7 +49,6 @@ public class BackgroundDrawable extends Drawable
 	 */
 	public BackgroundDrawable(Bitmap resource)
 	{
-		//出错报告
 		this.resource = Objects.requireNonNull(resource);
 		//图像抖动
 		pen.setDither(true);
@@ -57,6 +56,15 @@ public class BackgroundDrawable extends Drawable
 		pen.setAntiAlias(false);
 		//透明度满
 		pen.setAlpha(255);
+	}
+	
+	/**
+	 * 共享图片资源构造方法。
+	 * @param anther 另一个drawable。
+	 */
+	public BackgroundDrawable(BackgroundDrawable another)
+	{
+		this(another.resource);
 	}
 
 	/**
@@ -70,7 +78,7 @@ public class BackgroundDrawable extends Drawable
 		//realSize实际大小矩形对象
 		final Rect realSize=getBounds();
 		final int[] envSize=new int[]{realSize.width(),realSize.height()};
-		
+
 		//如果背景图被回收了
 		if(resource.isRecycled())
 		{
@@ -83,19 +91,19 @@ public class BackgroundDrawable extends Drawable
 		{
 			resource.prepareToDraw();
 		}
-		
+
 		//图片的大小
 		final int[] resSize=new int[]{resource.getWidth(),resource.getHeight()};
-		
+
 		//source源矩形，limit限制矩形
 		final Rect source=new Rect();
 		final Rect limit=new Rect();
-		
+
 		//图片宽于提供的环境宽
-		if(resSize[0]>=envSize[0])
+		if(resSize[0] >= envSize[0])
 		{
 			//图片高于提供的环境高
-			if(resSize[1]>=envSize[1])
+			if(resSize[1] >= envSize[1])
 			{
 				source.set(0,0,envSize[0],envSize[1]);
 				limit.set(0,0,envSize[0],envSize[1]);
@@ -110,20 +118,20 @@ public class BackgroundDrawable extends Drawable
 				{
 					limit.set(0,heightTop,envSize[0],heightBottom);
 					canvas.drawBitmap(resource,source,limit,pen);
-					
-					if(heightBottom==envSize[1])
+
+					if(heightBottom == envSize[1])
 					{
 						return;
 					}
-					
+
 					//修改偏移
-					heightTop=heightTop+resSize[1];
-					heightBottom=heightBottom+resSize[1];
-					
-					if(heightBottom>envSize[1])
+					heightTop = heightTop + resSize[1];
+					heightBottom = heightBottom + resSize[1];
+
+					if(heightBottom > envSize[1])
 					{
-						source.set(0,0,envSize[0],resSize[1]-(heightBottom-envSize[1]));
-						heightBottom=envSize[1];
+						source.set(0,0,envSize[0],resSize[1] - (heightBottom - envSize[1]));
+						heightBottom = envSize[1];
 					}
 				}
 			}
@@ -131,7 +139,7 @@ public class BackgroundDrawable extends Drawable
 		else //图片宽低于提供的环境宽
 		{
 			//图片高于提供的环境高
-			if(resSize[1]>=envSize[1])
+			if(resSize[1] >= envSize[1])
 			{
 				int widthLeft=0,widthRight=resSize[1];
 				source.set(0,0,resSize[0],envSize[1]);
@@ -140,19 +148,19 @@ public class BackgroundDrawable extends Drawable
 					limit.set(widthLeft,0,widthRight,envSize[1]);
 					canvas.drawBitmap(resource,source,limit,pen);
 
-					if(widthRight==envSize[0])
+					if(widthRight == envSize[0])
 					{
 						return;
 					}
 
 					//修改偏移
-					widthLeft=widthLeft+resSize[0];
-					widthRight=widthRight+resSize[0];
+					widthLeft = widthLeft + resSize[0];
+					widthRight = widthRight + resSize[0];
 
-					if(widthRight>envSize[0])
+					if(widthRight > envSize[0])
 					{
-						source.set(0,0,resSize[0]-(widthRight-envSize[0]),envSize[1]);
-						widthRight=envSize[0];
+						source.set(0,0,resSize[0] - (widthRight - envSize[0]),envSize[1]);
+						widthRight = envSize[0];
 					}
 				}
 			}
@@ -169,35 +177,35 @@ public class BackgroundDrawable extends Drawable
 						limit.set(widthLeft,heightTop,widthRight,heightBottom);
 						canvas.drawBitmap(resource,source,limit,pen);
 
-						if(widthRight==envSize[0])
+						if(widthRight == envSize[0])
 						{
 							break;
 						}
 
 						//修改偏移
-						widthLeft=widthLeft+resSize[0];
-						widthRight=widthRight+resSize[0];
+						widthLeft = widthLeft + resSize[0];
+						widthRight = widthRight + resSize[0];
 
-						if(widthRight>envSize[0])
+						if(widthRight > envSize[0])
 						{
-							source.set(0,0,resSize[0]-(widthRight-envSize[0]),markY);
-							widthRight=envSize[0];
+							source.set(0,0,resSize[0] - (widthRight - envSize[0]),markY);
+							widthRight = envSize[0];
 						}
 					}
-					
-					if(heightBottom==envSize[1])
+
+					if(heightBottom == envSize[1])
 					{
 						return;
 					}
 
 					//修改偏移
-					heightTop=heightTop+resSize[1];
-					heightBottom=heightBottom+resSize[1];
+					heightTop = heightTop + resSize[1];
+					heightBottom = heightBottom + resSize[1];
 
-					if(heightBottom>envSize[1])
+					if(heightBottom > envSize[1])
 					{
-						source.set(0,0,resSize[0],markY=resSize[1]-(heightBottom-envSize[1]));
-						heightBottom=envSize[1];
+						source.set(0,0,resSize[0],markY = resSize[1] - (heightBottom - envSize[1]));
+						heightBottom = envSize[1];
 					}
 				}
 			}
