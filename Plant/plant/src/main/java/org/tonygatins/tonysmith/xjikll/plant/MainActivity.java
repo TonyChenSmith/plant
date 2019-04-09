@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 		TimingRefresher.initTimingRefreaher(this);
-		supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
 		background = new BackgroundDrawable(BitmapFactory.decodeResource(getResources(),R.drawable.plant_background));

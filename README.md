@@ -1,2 +1,3 @@
-# plants
-外包的游戏，Plants,设计者@xjikll
+# plant
+---
+外包的游戏，Plant,设计者xjikll。
