@@ -21,45 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.tonygatins.tonysmith.xjikll.plant;
+package org.tonygatins.tonysmith.xjikll.plant.widget;
 
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.LinearLayout;
-import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.BackgroundDrawable;
-import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
+import android.widget.GridLayout;
 
-public class MainActivity extends AppCompatActivity
+/**
+ * 新的布局管理器，管理田块。
+ * @author Tony Chen Smith
+ */
+public final class FieldBlockLayout extends GridLayout
 {
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-	}
-
-	@Override
-	protected void onDestroy()
+	FieldBlockLayout()
 	{
-		// TODO: Implement this method
-		super.onDestroy();
-	}
-
-	private class Events implements OnClickListener
-	{
-
-		@Override
-		public void onClick(View p1)
-		{
-			// TODO: Implement this method
-		}
-
-		protected Events()
-		{
-		}
+		super(null);
 	}
 }

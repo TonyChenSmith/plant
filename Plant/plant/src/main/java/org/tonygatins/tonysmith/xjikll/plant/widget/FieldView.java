@@ -33,7 +33,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import java.util.concurrent.ScheduledFuture;
 import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
-import org.tonygatins.tonysmith.xjikll.plant.process.TimingRefresher;
 
 /**
  * 田块的视图实现。
