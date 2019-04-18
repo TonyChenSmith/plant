@@ -46,7 +46,7 @@ public final class FieldView extends View
 	/**
 	 * 构造一个田视图。没有额外属性。
 	 * @param context 系统提供的context。
-	 * @param attrs 系统给的属性列表。
+	 * @param attrs 系统给的属性集对象。
 	 */
 	public FieldView(Context context,AttributeSet attrs)
 	{

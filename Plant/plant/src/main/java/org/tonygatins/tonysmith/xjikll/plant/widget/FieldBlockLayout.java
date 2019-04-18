@@ -23,16 +23,24 @@
  */
 package org.tonygatins.tonysmith.xjikll.plant.widget;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.GridLayout;
 
 /**
- * 新的布局管理器，管理田块。
+ * 新的布局管理器，管理田块。可滚动。
  * @author Tony Chen Smith
  */
 public final class FieldBlockLayout extends GridLayout
 {
-	FieldBlockLayout()
+
+	/**
+	 * 构造方法，用内容对象构造布局。
+	 * @param context 系统给的内容对象。
+	 * @param attrs 系统给的属性集对象。
+	 */
+	public FieldBlockLayout(Context context,AttributeSet attrs)
 	{
-		super(null);
+		super(context,attrs);
 	}
 }
