@@ -45,7 +45,7 @@ public final class FieldBlockLayout extends GridLayout
 		super(context,attrs);
 		scroller=new Scroller(context);
 	}
-	
+
 	//滑动器对象
 	private final Scroller scroller;
 
