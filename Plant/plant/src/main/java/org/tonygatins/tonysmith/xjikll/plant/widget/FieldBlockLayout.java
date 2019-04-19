@@ -23,7 +23,11 @@
  */
 package org.tonygatins.tonysmith.xjikll.plant.widget;
 
+import android.content.Context;
 import android.widget.GridLayout;
+import android.util.AttributeSet;
+import android.widget.Scroller;
+import android.view.MotionEvent;
 
 /**
  * 新的布局管理器，管理田块。
@@ -31,8 +35,28 @@ import android.widget.GridLayout;
  */
 public final class FieldBlockLayout extends GridLayout
 {
-	FieldBlockLayout()
+	/**
+	 * 初始化属性。
+	 * @param context 系统给的内容对象。
+	 * @param attrs 系统给的属性集对象。
+	 */
+	public FieldBlockLayout(Context context,AttributeSet attrs)
 	{
-		super(null);
+		super(context,attrs);
+		scroller=new Scroller(context);
+	}
+	
+	//滑动器对象
+	private final Scroller scroller;
+
+	/**
+	 * 重写触摸事件。
+	 * @param event 事件位移对象。
+	 */
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		// TODO: Implement this method
+		return super.onTouchEvent(event);
 	}
 }
