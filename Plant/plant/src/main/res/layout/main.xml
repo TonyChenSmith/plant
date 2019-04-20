@@ -2,7 +2,8 @@
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="match_parent"
-	android:layout_width="match_parent">
+	android:layout_width="match_parent"
+	android:descendantFocusability="afterDescendants">
 
 	<LinearLayout
 		android:layout_height="wrap_content"
@@ -16,7 +17,8 @@
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceLarge"
 			android:layout_width="match_parent"
-			android:gravity="center"/>
+			android:gravity="center"
+			android:text="t"/>
 
 		<LinearLayout
 			android:layout_height="60dp"
@@ -26,6 +28,131 @@
 		</LinearLayout>
 
 	</LinearLayout>
+
+	<org.tonygatins.tonysmith.xjikll.plant.widget.FieldBlockLayout
+		columnCount="4"
+		android:layout_height="match_parent"
+		android:layout_width="match_parent"
+		rowCount="4"
+		android:layout_above="@id/plantActionBar"
+		android:columnCount="4"
+		android:rowCount="4"
+		android:id="@+id/plantFieldBlock"
+		android:descendantFocusability="beforeDescendants">
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField1"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField2"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField3"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField4"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField5"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField6"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField7"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField8"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField9"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField10"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField11"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField12"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField13"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField14"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField15"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+		<org.tonygatins.tonysmith.xjikll.plant.widget.FieldView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/plantField16"
+			android:layout_margin="30dp"
+			android:layout_gravity="center"/>
+
+	</org.tonygatins.tonysmith.xjikll.plant.widget.FieldBlockLayout>
 
 </RelativeLayout>
 

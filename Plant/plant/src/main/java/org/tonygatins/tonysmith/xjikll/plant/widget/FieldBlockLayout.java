@@ -30,6 +30,7 @@ import android.widget.Scroller;
 import android.view.MotionEvent;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.view.ViewConfiguration;
+import android.util.Log;
 
 /**
  * 新的布局管理器，管理田块。
@@ -45,12 +46,7 @@ public final class FieldBlockLayout extends GridLayout
 	public FieldBlockLayout(Context context,AttributeSet attrs)
 	{
 		super(context,attrs);
-		scroller=new Scroller(context);
-		moveMix=ViewConfigurationCompat.getScaledPagingTouchSlop(ViewConfiguration.get(context));
 	}
-
-	//滑动器对象。
-	private final Scroller scroller;
 	
 	//最后位移坐标。
 	private final float[] last = new float[2];
@@ -60,9 +56,6 @@ public final class FieldBlockLayout extends GridLayout
 	
 	//位移距离。
 	private final float[] move = new float[2];
-	
-	//最小位移像素。
-	private final float moveMix;
 
 	//边界大小。
 	private final int[][] border = new int[2][2];
@@ -80,9 +73,59 @@ public final class FieldBlockLayout extends GridLayout
 		{
 			//移动
 			case MotionEvent.ACTION_MOVE:
+				move[0]=event.getRawX();
+				move[1]=event.getRawY();
 				
-			//抬起
-			case MotionEvent.ACTION_UP:
+				//获得偏移值
+				int scrolledX=(int)(last[0]-move[0]);
+				int scrolledY=(int)(last[1]-move[1]);
+				
+				Log.i("Value",Integer.toString(scrolledX)+"+"+Integer.toString(scrolledY));
+				
+				if(getScrollX()+scrolledX<border[0][0])
+				{
+					if(getScrollY()+scrolledY<border[0][1])
+					{
+						scrollTo(border[0][0],border[0][1]);
+						return true;
+					}
+					else if(getScrollY()+getHeight()+scrolledY>border[1][1])
+					{
+						scrollTo(border[0][0],border[1][1]-getHeight());
+						return true;
+					}
+					
+					scrollTo(border[0][0],0);
+					scrollBy(0,scrolledY);
+					last[1]=move[1];
+					
+					return super.onTouchEvent(event);
+				}
+				else if(getScrollX()+getHeight()+scrolledX>border[1][0])
+				{
+					if(getScrollY()+scrolledY<border[0][1])
+					{
+						scrollTo(border[1][0]-getWidth(),border[0][1]);
+						return true;
+					}
+					else if(getScrollY()+getHeight()+scrolledY>border[1][1])
+					{
+						scrollTo(border[1][0],border[1][1]);
+						return true;
+					}
+
+					scrollTo(border[1][0],0);
+					scrollBy(0,scrolledY);
+					last[1]=move[1];
+					
+					return super.onTouchEvent(event);
+				}
+				
+				scrollBy(scrolledX,scrolledY);
+				last[0]=move[0];
+				last[1]=move[1];
+				
+				return super.onTouchEvent(event);
 		}
 		return super.onTouchEvent(event);
 	}
@@ -90,7 +133,7 @@ public final class FieldBlockLayout extends GridLayout
 	/**
 	 * 重写中断触摸事件方法。
 	 * @param ev 事件位移对象。
-	 * @return true为拦截。
+	 * @return true为拦截。传送至触摸监听器。
 	 */
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev)
@@ -112,7 +155,7 @@ public final class FieldBlockLayout extends GridLayout
 				last[0]=move[0];
 				last[1]=move[1];
 				
-				if(distanceX > moveMix || distanceY > moveMix)
+				if(distanceX > 5 || distanceY > 5)
 				{
 					return true;
 				}

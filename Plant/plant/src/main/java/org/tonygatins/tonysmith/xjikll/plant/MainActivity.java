@@ -23,23 +23,51 @@
  */
 package org.tonygatins.tonysmith.xjikll.plant;
 
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.LinearLayout;
 import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.BackgroundDrawable;
 import org.tonygatins.tonysmith.xjikll.plant.graphics.drawable.FieldBackgroundDrawable;
+import android.graphics.BitmapFactory;
 
 public class MainActivity extends AppCompatActivity
 {
+	private BackgroundDrawable background;
+	
+	private FieldBackgroundDrawable fieldBackground;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+		
+		background=new BackgroundDrawable(BitmapFactory.decodeResource(getResources(),R.drawable.plant_background));
+		findViewById(R.id.plantFieldBlock).setBackground(background);
+		
+		fieldBackground=new FieldBackgroundDrawable(BitmapFactory.decodeResource(getResources(),R.drawable.field));
+		
+		findViewById(R.id.plantField1).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField2).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField3).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField4).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		
+		findViewById(R.id.plantField5).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField6).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField7).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField8).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		
+		findViewById(R.id.plantField9).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField10).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField11).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField12).setBackground(new FieldBackgroundDrawable(fieldBackground));
+
+		findViewById(R.id.plantField13).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField14).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField15).setBackground(new FieldBackgroundDrawable(fieldBackground));
+		findViewById(R.id.plantField16).setBackground(new FieldBackgroundDrawable(fieldBackground));
 	}
 
 	@Override
@@ -47,6 +75,8 @@ public class MainActivity extends AppCompatActivity
 	{
 		// TODO: Implement this method
 		super.onDestroy();
+		background.recycle();
+		fieldBackground.recycle();
 	}
 
 	private class Events implements OnClickListener
