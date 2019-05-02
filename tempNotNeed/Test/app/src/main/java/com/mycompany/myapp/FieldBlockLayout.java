@@ -26,8 +26,10 @@ package com.mycompany.myapp;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import com.mycompany.myapp.R;
+import android.view.MotionEvent;
 
 /**
  * 新的布局管理器，管理田块视图，可以拖动。
@@ -50,7 +52,26 @@ public final class FieldBlockLayout extends ViewGroup
 	//行数
 	private int fieldRowCount = 0;
 	
+	//单元格长度
+	private int unitWidth = 0;
+	
+	//单元格高度
+	private int unitHeight = 0;
+	
+	//位置记录,1维柱，2维行
+	private boolean[][] viewLocationTable=null;
+	
 	//构造方法
+	
+	/**
+	 * 初始化基本属性。
+	 * @param context 系统给的内容对象。
+	 */
+	public FieldBlockLayout(Context context)
+	{
+		super(context);
+		resetViewLocationTable();
+	}
 	
 	/**
 	 * 初始化属性及自定义属性。
@@ -71,11 +92,7 @@ public final class FieldBlockLayout extends ViewGroup
 			switch(subAttrSet.getIndex(itr))
 			{
 				case R.styleable.fieldBlockLayout_fieldColumnCount:
-					fieldColumnCount=subAttrSet.getInt(R.styleable.fieldBlockLayout_fieldColumnCount,0);
-					if(fieldColumnCount<0)
-					{
-						fieldColumnCount=0;
-					}
+					setFieldColumnCount(subAttrSet.getInt(R.styleable.fieldBlockLayout_fieldColumnCount,0));
 					break;
 				case R.styleable.fieldBlockLayout_fieldRowCount:
 					fieldRowCount=subAttrSet.getInt(R.styleable.fieldBlockLayout_fieldRowCount,0);
@@ -87,12 +104,495 @@ public final class FieldBlockLayout extends ViewGroup
 			}
 		}
 		subAttrSet.recycle();
+		resetViewLocationTable();
+	}
+	
+	//成员方法
+	
+	//数据域修改
+	
+	/**
+	 * 设置田块布局的柱数。
+	 * @param fieldColumnCount 田块布局柱数。
+	 */
+	public void setFieldColumnCount(int fieldColumnCount)
+	{
+		if(fieldColumnCount<0)
+		{
+			fieldColumnCount=0;
+		}
 		
+		this.fieldColumnCount=fieldColumnCount;
+		invalidate();
+	}
+	
+	/**
+	 * 获得田块布局的柱数。
+	 * @return 一个田块布局柱数的整型值。
+	 */
+	public int getFieldColumnCount()
+	{
+		return fieldColumnCount;
+	}
+	
+	/**
+	 * 设置田块布局的行数。
+	 * @param fieldRowCount 田块布局行数。
+	 */
+	public void setFieldRowCount(int fieldRowCount)
+	{
+		if(fieldRowCount<0)
+		{
+			fieldRowCount=0;
+		}
+		this.fieldRowCount=fieldRowCount;
+		invalidate();
+	}
+	
+	/**
+	 * 获得田块布局的行数。
+	 * @return 一个田块布局行数的整型值。
+	 */
+	public int getFieldRowCount()
+	{
+		return fieldRowCount;
+	}
+	
+	//重置子视图位置表
+	private void resetViewLocationTable()
+	{
+		//长度不变就返回
+		if(viewLocationTable!=null&&viewLocationTable.length==fieldColumnCount&&viewLocationTable[0].length==fieldRowCount)
+		{
+			return;
+		}
+		else
+		{
+			viewLocationTable=new boolean[fieldColumnCount][fieldRowCount];
+			for(int x=0;x<fieldColumnCount;x++)
+			{
+				for(int y=0;y<fieldRowCount;y++)
+				{
+					viewLocationTable[x][y]=false;
+				}
+			}
+		}
+	}
+	
+	//重载实现
+	
+	/**
+	 * 重载实现测量时方法。
+	 * @param widthMeasureSpec 测量宽度空间。
+	 * @param heightMeasureSpec 测量长度空间。
+	 */
+	@Override
+	protected void onMeasure(int widthMeasureSpec,int heightMeasureSpec)
+	{
+		// TODO: Implement this method
+		
+		//自身大小测量
+		super.onMeasure(widthMeasureSpec,heightMeasureSpec);
+		
+		final int widthSize=MeasureSpec.getSize(widthMeasureSpec);
+		final int heightSize=MeasureSpec.getSize(heightMeasureSpec);
+
+		int maxChildWdith=0,maxChildHeight=0;
+
+		final int childrenCount=getChildCount();
+
+		//测量子view,第一层循环。
+		for(int itr=0;itr < childrenCount;itr++)
+		{
+			View child=getChildAt(itr);
+			if(child.getVisibility() != View.GONE)
+			{
+				ViewGroup.LayoutParams params=child.getLayoutParams();
+				int childWdithSpec=0,childHeightSpec=0;
+				switch(params.width)
+				{
+					case LayoutParams.WRAP_CONTENT:
+						childWdithSpec = MeasureSpec.makeMeasureSpec(widthSize,MeasureSpec.AT_MOST);
+						break;
+					case LayoutParams.MATCH_PARENT:
+						childWdithSpec = MeasureSpec.makeMeasureSpec(widthSize,MeasureSpec.AT_MOST);
+						params.width = LayoutParams.WRAP_CONTENT;
+						break;
+					default:
+						childWdithSpec = MeasureSpec.makeMeasureSpec(params.width,MeasureSpec.EXACTLY);
+						break;
+				}
+				switch(params.height)
+				{
+					case LayoutParams.WRAP_CONTENT:
+						childHeightSpec = MeasureSpec.makeMeasureSpec(heightSize,MeasureSpec.AT_MOST);
+						break;
+					case LayoutParams.MATCH_PARENT:
+						childHeightSpec = MeasureSpec.makeMeasureSpec(heightSize,MeasureSpec.AT_MOST);
+						params.height = LayoutParams.WRAP_CONTENT;
+						break;
+					default:
+						childHeightSpec = MeasureSpec.makeMeasureSpec(params.height,MeasureSpec.EXACTLY);
+						break;
+				}
+
+				measureChild(child,childWdithSpec,childHeightSpec);
+
+				if(params instanceof MarginLayoutParams)
+				{
+					int marginTop=((MarginLayoutParams)params).topMargin;
+					int marginBottom=((MarginLayoutParams)params).bottomMargin;
+					int marginLeft=((MarginLayoutParams)params).leftMargin;
+					int marginRight=((MarginLayoutParams)params).rightMargin;
+
+					maxChildWdith = Math.max(child.getMeasuredWidth() + marginLeft + marginRight,maxChildWdith);
+					maxChildHeight = Math.max(child.getMeasuredHeight() + marginTop + marginBottom,maxChildHeight);
+				}
+				else
+				{
+					maxChildWdith = Math.max(child.getMeasuredWidth(),maxChildWdith);
+					maxChildHeight = Math.max(child.getMeasuredHeight(),maxChildHeight);
+				}
+			}
+		}
+
+		//矩阵,长度计算,一层循环
+		if(fieldColumnCount * fieldRowCount < getChildCount())
+		{
+			if(fieldColumnCount >= fieldRowCount)
+			{
+				while(true)
+				{
+					fieldColumnCount++;
+					if(fieldColumnCount * fieldRowCount >= getChildCount())
+					{
+						break;
+					}
+					fieldColumnCount--;
+					fieldRowCount++;
+					if(fieldColumnCount * fieldRowCount >= getChildCount())
+					{
+						break;
+					}
+					fieldColumnCount++;
+					if(fieldColumnCount * fieldRowCount >= getChildCount())
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				while(true)
+				{
+					fieldRowCount++;
+					if(fieldColumnCount * fieldRowCount >= getChildCount())
+					{
+						break;
+					}
+					fieldRowCount--;
+					fieldColumnCount++;
+					if(fieldColumnCount * fieldRowCount >= getChildCount())
+					{
+						break;
+					}
+					fieldRowCount++;
+					if(fieldColumnCount * fieldRowCount >= getChildCount())
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		unitWidth = maxChildWdith;
+		unitHeight = maxChildHeight;
+	}
+	
+	@Override
+	protected void onLayout(boolean changed,int left,int top,int right,int bottom)
+	{
+		// TODO: Implement this method
+		final int childrenCount=getChildCount();
+
+		//子视图位置表重置
+		resetViewLocationTable();
+
+		//一层循环
+		for(int itr=0;itr < childrenCount;itr++)
+		{
+			View child=getChildAt(itr);
+			if(child.getVisibility() != View.GONE && checkLayoutParams(child.getLayoutParams()))
+			{
+				LayoutParams params=(LayoutParams)child.getLayoutParams();
+				//x为c y为r
+				//-1为未定位
+				int x=-1,y=-1;
+				if((params.fieldColumnLay <= fieldColumnCount && params.fieldColumnLay > 0) && (params.fieldRowLay > 0 && params.fieldRowLay <= fieldRowCount))
+				{
+					x = params.fieldColumnLay - 1;
+					y = params.fieldRowLay - 1;
+					if(viewLocationTable[x][y])
+					{
+						x = -1;
+						y = -1;
+					}
+					else
+					{
+						viewLocationTable[x][y] = true;
+					}
+				}
+				else if(params.fieldColumnLay <= fieldColumnCount && params.fieldColumnLay > 0)
+				{
+					x = params.fieldColumnLay - 1;
+					
+					//二层循环
+					for(int itr1=0;itr1 < fieldRowCount;itr1++)
+					{
+						if(!viewLocationTable[x][itr1])
+						{
+							y = itr1;
+							viewLocationTable[x][y] = true;
+							break;
+						}
+					}
+
+					if(y == -1)
+					{
+						x = -1;
+					}
+				}
+				else if(params.fieldRowLay > 0 && params.fieldRowLay <= fieldRowCount)
+				{
+					y = params.fieldRowLay - 1;
+					
+					//二层循环
+					for(int itr1=0;itr1 < fieldColumnCount;itr1++)
+					{
+						if(!viewLocationTable[itr1][y])
+						{
+							x = itr1;
+							viewLocationTable[x][y] = true;
+							break;
+						}
+					}
+
+					if(x == -1)
+					{
+						y = -1;
+					}
+				}
+
+				final int viewWidth=child.getMeasuredWidth();
+				final int viewHeight=child.getMeasuredHeight();
+
+				//自寻址方法
+				if(x == -1)
+				{
+					boolean isStop=false;
+					
+					if(fieldColumnCount >= fieldRowCount)
+					{
+						//二层循环
+						for(int itr1 = 0;itr1 < fieldColumnCount;itr1++)
+						{
+							if(isStop)
+							{
+								break;
+							}
+							
+							//三层循环
+							for(int itr2=0;itr2 < fieldRowCount;itr2++)
+							{
+								if(!viewLocationTable[itr1][itr2])
+								{
+									x = itr1;
+									y = itr2;
+									viewLocationTable[x][y] = true;
+									isStop = true;
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						//二层循环
+						for(int itr1 = 0;itr1 < fieldRowCount;itr1++)
+						{
+							if(isStop)
+							{
+								break;
+							}
+							
+							//三层循环
+							for(int itr2=0;itr2 < fieldColumnCount;itr2++)
+							{
+								if(!viewLocationTable[itr1][itr2])
+								{
+									y = itr1;
+									x = itr2;
+									viewLocationTable[x][y] = true;
+									isStop = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				//单元格位置
+				final int columnLength=x * unitWidth;
+				final int rowLength=y * unitHeight;
+				//Offset 偏移量位置
+				final int columnOffset=(unitWidth - viewWidth) / 2;
+				final int rowOffset=(unitHeight - viewHeight) / 2;
+				child.layout(columnLength + columnOffset,rowLength + rowOffset,columnLength + columnOffset + viewWidth,rowLength + rowOffset + viewHeight);
+			}
+		}
+	}
+	
+	/**
+	 * 重载构造布局参数对象方法。xml文件解析时调用。
+	 * @param attrs 解析时得到的属性集对象。
+	 * @return 分析构造出来的布局参数对象。
+	 */
+	@Override
+	public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs)
+	{
+		// TODO: Implement this method
+		return new LayoutParams(getContext(),attrs);
+	}
+
+	/**
+	 * 重载检查布局参数类型的方法。
+	 * @return true为属于内部类的布局参数对象。false为不属于。
+	 */
+	@Override
+	protected boolean checkLayoutParams(ViewGroup.LayoutParams p)
+	{
+		// TODO: Implement this method
+		return p instanceof LayoutParams ? true: false;
+	}
+	
+	//静态内部类
+	
+	/**
+	 * 继承于ViewGroup.MarginLayoutParams的布局参数类。
+	 */
+	public static class LayoutParams extends ViewGroup.MarginLayoutParams
+	{
+		/**
+		 * 子视图所位于的田块布局的柱数。0为系统安排。
+		 */
+		public int fieldColumnLay=0;
+
+		/**
+		 * 子视图所位于的田块布局的行数。0为系统安排。
+		 */
+		public int fieldRowLay=0;
+
+		/**
+		 * 用一个ViewGroup.LayoutParams的对象来构造布局对象。
+		 * @param source 原来ViewGroup.LayoutParams的布局对象。
+		 */
+		public LayoutParams(ViewGroup.LayoutParams source)
+		{
+			super(source);
+		}
+
+		/**
+		 * 用一个ViewGroup.MarginLayoutParams的对象来构造布局对象。
+		 * @param source 原来ViewGroup.MarginLayoutParams的对象。
+		 */
+		public LayoutParams(ViewGroup.MarginLayoutParams source)
+		{
+			super(source);
+		}
+
+		/**
+		 * 用自身类的对象再构造一个布局对象。（拷贝）
+		 * @param source 原来的对象。
+		 */
+		public LayoutParams(LayoutParams source)
+		{
+            super(source);
+			this.fieldColumnLay=source.fieldColumnLay;
+			this.fieldRowLay=source.fieldRowLay;
+        }
+
+		/**
+		 * 用各种属性值构造布局对象。
+		 * @param width 视图宽度。
+		 * @param height 视图高度。
+		 * @param fieldColumnLay 田块布局柱数。
+		 * @param fieldRowLay 田块布局行数。
+		 */
+		public LayoutParams(int width,int height,int fieldColumnLay,int fieldRowLay)
+		{
+			super(width,height);
+			
+			//不允许match_parent
+            if(width == LayoutParams.MATCH_PARENT)
+			{
+				this.width = LayoutParams.WRAP_CONTENT;
+			}
+			
+			if(height == LayoutParams.MATCH_PARENT)
+			{
+				this.height = LayoutParams.WRAP_CONTENT;
+			}
+
+			//0为系统测量
+			if(fieldRowLay < 0)
+			{
+				fieldRowLay = 0;
+			}
+			this.fieldRowLay = fieldRowLay;
+
+			if(fieldColumnLay < 0)
+			{
+				fieldColumnLay = 0;
+			}
+			this.fieldColumnLay = fieldColumnLay;
+        }
+
+		/**
+		 * 用内容对象和属性集对象构造布局对象。
+		 * @param context 系统提供的内容对象。
+		 * @param attrs 系统提供的属性集对象。
+		 */
+		public LayoutParams(Context context,AttributeSet attrs)
+		{
+            super(context,attrs);
+
+            TypedArray subAttrSet = context.obtainStyledAttributes(attrs,R.styleable.fieldBlockLayoutParams);
+			fieldColumnLay = subAttrSet.getInt(R.styleable.fieldBlockLayoutParams_fieldColumnLay,0);
+			//0为系统测量
+			if(fieldColumnLay < 0)
+			{
+				fieldColumnLay = 0;
+			}
+			fieldRowLay = subAttrSet.getInt(R.styleable.scrollable_gridlayout_rowLayout,0);
+			if(fieldRowLay < 0)
+			{
+				fieldRowLay = 0;
+			}
+            subAttrSet.recycle();
+        }
 	}
 
 	@Override
-	protected void onLayout(boolean p1,int p2,int p3,int p4,int p5)
+	public boolean onInterceptTouchEvent(MotionEvent ev)
 	{
 		// TODO: Implement this method
+		return super.onInterceptTouchEvent(ev);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		// TODO: Implement this method
+		return super.onTouchEvent(event);
 	}
 }
