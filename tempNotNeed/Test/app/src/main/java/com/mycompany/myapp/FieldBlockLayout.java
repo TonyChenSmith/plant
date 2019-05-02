@@ -24,162 +24,75 @@
 package com.mycompany.myapp;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
+import com.mycompany.myapp.R;
 
 /**
- * 新的布局管理器，管理田块。
+ * 新的布局管理器，管理田块视图，可以拖动。
  * @author Tony Chen Smith
  */
 public final class FieldBlockLayout extends ViewGroup
 {
+	//成员数据域
+	
+	/* 表：***** column(x)
+	 *	  *
+	 *	  *
+	 *	  *
+	 *	  *row(y)
+	 */
+	
+	//柱数
+	private int fieldColumnCount = 0;
+	
+	//行数
+	private int fieldRowCount = 0;
+	
+	//构造方法
+	
 	/**
-	 * 初始化属性。
+	 * 初始化属性及自定义属性。
 	 * @param context 系统给的内容对象。
 	 * @param attrs 系统给的属性集对象。
 	 */
 	public FieldBlockLayout(Context context,AttributeSet attrs)
 	{
+		//调用原来父类的构造方法
 		super(context,attrs);
-	}
-	
-	//最后ACTION_MOVE位移坐标。
-	private final float[] last = new float[2];
-	
-	//按下时的坐标。
-	private final float[] down = new float[2];
-	
-	//位移距离。
-	private final float[] move = new float[2];
 
-	//边界大小。
-	private final int[][] border = new int[2][2];
-	
-	/**
-	 * 重写触摸事件。
-	 * @param event 事件位移对象。
-	 * @return true为已解决。
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		// TODO: Implement this method
-		switch(event.getAction())
+		//检查自定义参数
+		TypedArray subAttrSet=context.obtainStyledAttributes(attrs,R.styleable.fieldBlockLayout);
+		final int setMemberCount=subAttrSet.getIndexCount();
+		for(int itr=0;itr < setMemberCount;itr++)
 		{
-			//移动
-			case MotionEvent.ACTION_MOVE:
-				move[0]=event.getRawX();
-				move[1]=event.getRawY();
-				
-				//获得偏移值
-				int scrolledX=(int)(last[0]-move[0]);
-				int scrolledY=(int)(last[1]-move[1]);
-				
-				if(getScrollX()+scrolledX<border[0][0])
-				{
-					if(getScrollY()+scrolledY<border[0][1])
+			//0为现场测量
+			switch(subAttrSet.getIndex(itr))
+			{
+				case R.styleable.fieldBlockLayout_fieldColumnCount:
+					fieldColumnCount=subAttrSet.getInt(R.styleable.fieldBlockLayout_fieldColumnCount,0);
+					if(fieldColumnCount<0)
 					{
-						scrollTo(border[0][0],border[0][1]);
-						return true;
+						fieldColumnCount=0;
 					}
-					else if(getScrollY()+getHeight()+scrolledY>border[1][1])
+					break;
+				case R.styleable.fieldBlockLayout_fieldRowCount:
+					fieldRowCount=subAttrSet.getInt(R.styleable.fieldBlockLayout_fieldRowCount,0);
+					if(fieldRowCount<0)
 					{
-						scrollTo(border[0][0],border[1][1]-getHeight());
-						return true;
+						fieldRowCount=0;
 					}
-					
-					scrollTo(border[0][0],0);
-					scrollBy(0,scrolledY);
-					last[1]=move[1];
-					
-					return super.onTouchEvent(event);
-				}
-				else if(getScrollX()+getHeight()+scrolledX>border[1][0])
-				{
-					if(getScrollY()+scrolledY<border[0][1])
-					{
-						scrollTo(border[1][0]-getWidth(),border[0][1]);
-						return true;
-					}
-					else if(getScrollY()+getHeight()+scrolledY>border[1][1])
-					{
-						scrollTo(border[1][0],border[1][1]);
-						return true;
-					}
-
-					scrollTo(border[1][0],0);
-					scrollBy(0,scrolledY);
-					last[1]=move[1];
-					
-					return super.onTouchEvent(event);
-				}
-				
-				scrollBy(scrolledX,scrolledY);
-				last[0]=move[0];
-				last[1]=move[1];
-				
-				return super.onTouchEvent(event);
+					break;
+			}
 		}
-		return super.onTouchEvent(event);
+		subAttrSet.recycle();
+		
 	}
 
-	/**
-	 * 重写中断触摸事件方法。
-	 * @param ev 事件位移对象。
-	 * @return true为拦截。传送至触摸监听器。
-	 */
 	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev)
+	protected void onLayout(boolean p1,int p2,int p3,int p4,int p5)
 	{
 		// TODO: Implement this method
-		switch(ev.getAction())
-		{
-			case MotionEvent.ACTION_DOWN:
-				down[0]=ev.getRawX();
-				down[1]=ev.getRawY();
-				last[0]=down[0];
-				last[1]=down[1];
-				break;
-			case MotionEvent.ACTION_MOVE:
-				move[0]=ev.getRawX();
-				move[1]=ev.getRawY();
-				float distanceX=Math.abs(move[0]-down[0]);
-				float distanceY=Math.abs(move[1]-down[1]);
-				Log.i("Value",Float.toString(distanceX)+"+"+Float.toString(distanceY));
-				last[0]=move[0];
-				last[1]=move[1];
-				
-				if(distanceX > 5 || distanceY > 5)
-				{
-					return true;
-				}
-				break;
-		}
-		
-		return super.onInterceptTouchEvent(ev);
 	}
-
-	/**
-	 * 重写布局方法，测量边界。
-	 * @param changed 是否改变。true为已改变。
-	 * @param left 左部的坐标。
-	 * @param top 顶部的坐标。
-	 * @param right 右部的坐标。
-	 * @param bottom 底部的坐标。
-	 */
-	@Override
-	protected void onLayout(boolean changed,int left,int top,int right,int bottom)
-	{
-		// TODO: Implement this method
-		
-		border[0][0]=getChildAt(0).getLeft();
-		border[0][1]=getChildAt(0).getTop();
-		
-		border[1][0]=getChildAt(getChildCount()-1).getRight();
-		border[1][1]=getChildAt(getChildCount()-1).getBottom();
-	}
-	
-	
 }
