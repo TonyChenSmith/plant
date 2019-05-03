@@ -5,9 +5,9 @@
 	android:layout_height="wrap_content"
 	android:layout_width="wrap_content">
 
-	<com.mycompany.myapp.TestScrollLayout
-		app:columnCount="3"
-		app:rowCount="3"
+	<com.mycompany.myapp.FieldBlockLayout
+		app:fieldColumnCount="3"
+		app:fieldRowCount="3"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/mainLinearLayout1">
@@ -67,7 +67,7 @@
 			android:background="#000000"
 			android:layout_margin="20dp"/>
 
-	</com.mycompany.myapp.TestScrollLayout>
+	</com.mycompany.myapp.FieldBlockLayout>
 
 </RelativeLayout>
 

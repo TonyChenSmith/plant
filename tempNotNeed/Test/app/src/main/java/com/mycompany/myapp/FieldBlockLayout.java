@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.mycompany.myapp.R;
 import android.view.MotionEvent;
+import android.support.v4.view.ViewConfigurationCompat;
+import android.view.ViewConfiguration;
 
 /**
  * 新的布局管理器，管理田块视图，可以拖动。
@@ -61,6 +63,21 @@ public final class FieldBlockLayout extends ViewGroup
 	//位置记录,1维柱，2维行
 	private boolean[][] viewLocationTable=null;
 	
+	//最小的拖动位移像素
+	private final int mixTouchSlop;
+	
+	//点下去的位置，0为x(c)，1为y(r)
+	private final float[] downLocation=new float[2];
+	
+	//最后位移位置
+	private final float[] lastMoveLocation=new float[2];
+	
+	//移动时的位置
+	private final float[] moveLocation=new float[2];
+	
+	//边界位置，0l 1t 2r 3b
+	private final int[] border=new int[4];
+	
 	//构造方法
 	
 	/**
@@ -70,6 +87,7 @@ public final class FieldBlockLayout extends ViewGroup
 	public FieldBlockLayout(Context context)
 	{
 		super(context);
+		mixTouchSlop=ViewConfigurationCompat.getScaledPagingTouchSlop(ViewConfiguration.get(context));
 		resetViewLocationTable();
 	}
 	
@@ -82,6 +100,8 @@ public final class FieldBlockLayout extends ViewGroup
 	{
 		//调用原来父类的构造方法
 		super(context,attrs);
+		
+		mixTouchSlop=ViewConfigurationCompat.getScaledPagingTouchSlop(ViewConfiguration.get(context));
 
 		//检查自定义参数
 		TypedArray subAttrSet=context.obtainStyledAttributes(attrs,R.styleable.fieldBlockLayout);
@@ -450,6 +470,11 @@ public final class FieldBlockLayout extends ViewGroup
 				child.layout(columnLength + columnOffset,rowLength + rowOffset,columnLength + columnOffset + viewWidth,rowLength + rowOffset + viewHeight);
 			}
 		}
+		
+		border[0]=0;
+		border[1]=0;
+		border[2]=unitWidth*fieldColumnCount;
+		border[3]=unitHeight*fieldRowCount;
 	}
 	
 	/**
@@ -466,13 +491,112 @@ public final class FieldBlockLayout extends ViewGroup
 
 	/**
 	 * 重载检查布局参数类型的方法。
+	 * @param params 待判断的布局参数对象。
 	 * @return true为属于内部类的布局参数对象。false为不属于。
 	 */
 	@Override
-	protected boolean checkLayoutParams(ViewGroup.LayoutParams p)
+	protected boolean checkLayoutParams(ViewGroup.LayoutParams params)
 	{
 		// TODO: Implement this method
-		return p instanceof LayoutParams ? true: false;
+		return params instanceof LayoutParams ? true: false;
+	}
+	
+	/**
+	 * 重写事件拦截方法。
+	 * @param event 触摸事件对象。
+	 * @return true代表事件拦截给本view处理。
+	 */
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent event)
+	{
+		// TODO: Implement this method
+		switch(event.getAction())
+		{
+			case MotionEvent.ACTION_DOWN:
+				downLocation[0]=event.getRawX();
+				downLocation[1]=event.getRawY();
+				lastMoveLocation[0]=downLocation[0];
+				lastMoveLocation[1]=downLocation[1];
+				super.onInterceptTouchEvent(event);
+				break;
+			case MotionEvent.ACTION_MOVE:
+				moveLocation[0]=event.getRawX();
+				moveLocation[1]=event.getRawY();
+				lastMoveLocation[0]=moveLocation[0];
+				lastMoveLocation[1]=moveLocation[1];
+				float diffX=Math.abs(moveLocation[0]-downLocation[0]);
+				float diffY=Math.abs(moveLocation[1]-downLocation[1]);
+				if(diffX > mixTouchSlop || diffY > mixTouchSlop)
+				{
+					return true;
+				}
+				break;
+		}
+		return super.onInterceptTouchEvent(event);
+	}
+
+
+	/**
+	 * 重写事件处理方法。
+	 * @param event 触摸事件对象。
+	 * @return true代表事件已处理。
+	 */
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		// TODO: Implement this method
+		switch(event.getAction())
+		{
+			case MotionEvent.ACTION_DOWN:
+				super.onTouchEvent(event);
+				return true;
+			case MotionEvent.ACTION_MOVE:
+				moveLocation[0]=event.getRawX();
+				moveLocation[1]=event.getRawY();
+				int scrolledX=(int)(lastMoveLocation[0]-moveLocation[0]);
+				int scrolledY=(int)(lastMoveLocation[1]-moveLocation[1]);
+				if(getScrollX() + scrolledX < border[0])
+				{
+					if(getScrollY() + scrolledY < border[1])
+					{
+						scrollTo(border[0],border[1]);
+						return true;
+					}
+					else if(getScrollY() + scrolledY + unitHeight*fieldRowCount > border[3])
+					{
+						scrollTo(border[0],border[3]);
+						return true;
+					}
+					
+					scrollTo(border[0],getScrollY());
+					scrollBy(0,scrolledY);
+					return true;
+				}
+				else if(getScrollX() + scrolledX + unitWidth*fieldColumnCount > border[2])
+				{
+					if(getScrollY() + scrolledY < border[1])
+					{
+						scrollTo(border[2],border[1]);
+						return true;
+					}
+					else if(getScrollY() + scrolledY + unitHeight*fieldRowCount > border[3])
+					{
+						scrollTo(border[2],border[3]);
+						return true;
+					}
+
+					scrollTo(border[2],getScrollY());
+					scrollBy(0,scrolledY);
+					return true;
+				}
+				
+				scrollBy(scrolledX,scrolledY);
+				lastMoveLocation[0]=moveLocation[0];
+				lastMoveLocation[1]=moveLocation[1];
+				super.onTouchEvent(event);
+				return true;
+		}
+		return super.onTouchEvent(event);
 	}
 	
 	//静态内部类
@@ -580,19 +704,5 @@ public final class FieldBlockLayout extends ViewGroup
 			}
             subAttrSet.recycle();
         }
-	}
-
-	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev)
-	{
-		// TODO: Implement this method
-		return super.onInterceptTouchEvent(ev);
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		// TODO: Implement this method
-		return super.onTouchEvent(event);
 	}
 }
