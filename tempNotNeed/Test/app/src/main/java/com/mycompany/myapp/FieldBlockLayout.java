@@ -329,152 +329,163 @@ public final class FieldBlockLayout extends ViewGroup
 		unitHeight = maxChildHeight;
 	}
 	
+	/**
+	 * 重写布局时方法。
+	 * @param changed 改变时为true。
+	 * @param left 左部边长。
+	 * @param top 顶部边长。
+	 * @param right 右部边长。
+	 * @param bottom 底部边长。
+	 */
 	@Override
 	protected void onLayout(boolean changed,int left,int top,int right,int bottom)
 	{
-		// TODO: Implement this method
-		final int childrenCount=getChildCount();
-
-		//子视图位置表重置
-		resetViewLocationTable();
-
-		//一层循环
-		for(int itr=0;itr < childrenCount;itr++)
+		if(changed)
 		{
-			View child=getChildAt(itr);
-			if(child.getVisibility() != View.GONE && checkLayoutParams(child.getLayoutParams()))
+			// TODO: Implement this method
+			final int childrenCount=getChildCount();
+
+			//子视图位置表重置
+			resetViewLocationTable();
+
+			//一层循环
+			for(int itr=0;itr < childrenCount;itr++)
 			{
-				LayoutParams params=(LayoutParams)child.getLayoutParams();
-				//x为c y为r
-				//-1为未定位
-				int x=-1,y=-1;
-				if((params.fieldColumnLay <= fieldColumnCount && params.fieldColumnLay > 0) && (params.fieldRowLay > 0 && params.fieldRowLay <= fieldRowCount))
+				View child=getChildAt(itr);
+				if(child.getVisibility() != View.GONE && checkLayoutParams(child.getLayoutParams()))
 				{
-					x = params.fieldColumnLay - 1;
-					y = params.fieldRowLay - 1;
-					if(viewLocationTable[x][y])
+					LayoutParams params=(LayoutParams)child.getLayoutParams();
+					//x为c y为r
+					//-1为未定位
+					int x=-1,y=-1;
+					if((params.fieldColumnLay <= fieldColumnCount && params.fieldColumnLay > 0) && (params.fieldRowLay > 0 && params.fieldRowLay <= fieldRowCount))
 					{
-						x = -1;
-						y = -1;
-					}
-					else
-					{
-						viewLocationTable[x][y] = true;
-					}
-				}
-				else if(params.fieldColumnLay <= fieldColumnCount && params.fieldColumnLay > 0)
-				{
-					x = params.fieldColumnLay - 1;
-					
-					//二层循环
-					for(int itr1=0;itr1 < fieldRowCount;itr1++)
-					{
-						if(!viewLocationTable[x][itr1])
+						x = params.fieldColumnLay - 1;
+						y = params.fieldRowLay - 1;
+						if(viewLocationTable[x][y])
 						{
-							y = itr1;
+							x = -1;
+							y = -1;
+						}
+						else
+						{
 							viewLocationTable[x][y] = true;
-							break;
+						}
+					}
+					else if(params.fieldColumnLay <= fieldColumnCount && params.fieldColumnLay > 0)
+					{
+						x = params.fieldColumnLay - 1;
+
+						//二层循环
+						for(int itr1=0;itr1 < fieldRowCount;itr1++)
+						{
+							if(!viewLocationTable[x][itr1])
+							{
+								y = itr1;
+								viewLocationTable[x][y] = true;
+								break;
+							}
+						}
+
+						if(y == -1)
+						{
+							x = -1;
+						}
+					}
+					else if(params.fieldRowLay > 0 && params.fieldRowLay <= fieldRowCount)
+					{
+						y = params.fieldRowLay - 1;
+
+						//二层循环
+						for(int itr1=0;itr1 < fieldColumnCount;itr1++)
+						{
+							if(!viewLocationTable[itr1][y])
+							{
+								x = itr1;
+								viewLocationTable[x][y] = true;
+								break;
+							}
+						}
+
+						if(x == -1)
+						{
+							y = -1;
 						}
 					}
 
-					if(y == -1)
-					{
-						x = -1;
-					}
-				}
-				else if(params.fieldRowLay > 0 && params.fieldRowLay <= fieldRowCount)
-				{
-					y = params.fieldRowLay - 1;
-					
-					//二层循环
-					for(int itr1=0;itr1 < fieldColumnCount;itr1++)
-					{
-						if(!viewLocationTable[itr1][y])
-						{
-							x = itr1;
-							viewLocationTable[x][y] = true;
-							break;
-						}
-					}
+					final int viewWidth=child.getMeasuredWidth();
+					final int viewHeight=child.getMeasuredHeight();
 
+					//自寻址方法
 					if(x == -1)
 					{
-						y = -1;
-					}
-				}
+						boolean isStop=false;
 
-				final int viewWidth=child.getMeasuredWidth();
-				final int viewHeight=child.getMeasuredHeight();
-
-				//自寻址方法
-				if(x == -1)
-				{
-					boolean isStop=false;
-					
-					if(fieldColumnCount >= fieldRowCount)
-					{
-						//二层循环
-						for(int itr1 = 0;itr1 < fieldColumnCount;itr1++)
+						if(fieldColumnCount >= fieldRowCount)
 						{
-							if(isStop)
+							//二层循环
+							for(int itr1 = 0;itr1 < fieldColumnCount;itr1++)
 							{
-								break;
-							}
-							
-							//三层循环
-							for(int itr2=0;itr2 < fieldRowCount;itr2++)
-							{
-								if(!viewLocationTable[itr1][itr2])
+								if(isStop)
 								{
-									x = itr1;
-									y = itr2;
-									viewLocationTable[x][y] = true;
-									isStop = true;
 									break;
+								}
+
+								//三层循环
+								for(int itr2=0;itr2 < fieldRowCount;itr2++)
+								{
+									if(!viewLocationTable[itr1][itr2])
+									{
+										x = itr1;
+										y = itr2;
+										viewLocationTable[x][y] = true;
+										isStop = true;
+										break;
+									}
+								}
+							}
+						}
+						else
+						{
+							//二层循环
+							for(int itr1 = 0;itr1 < fieldRowCount;itr1++)
+							{
+								if(isStop)
+								{
+									break;
+								}
+
+								//三层循环
+								for(int itr2=0;itr2 < fieldColumnCount;itr2++)
+								{
+									if(!viewLocationTable[itr1][itr2])
+									{
+										y = itr1;
+										x = itr2;
+										viewLocationTable[x][y] = true;
+										isStop = true;
+										break;
+									}
 								}
 							}
 						}
 					}
-					else
-					{
-						//二层循环
-						for(int itr1 = 0;itr1 < fieldRowCount;itr1++)
-						{
-							if(isStop)
-							{
-								break;
-							}
-							
-							//三层循环
-							for(int itr2=0;itr2 < fieldColumnCount;itr2++)
-							{
-								if(!viewLocationTable[itr1][itr2])
-								{
-									y = itr1;
-									x = itr2;
-									viewLocationTable[x][y] = true;
-									isStop = true;
-									break;
-								}
-							}
-						}
-					}
-				}
 
-				//单元格位置
-				final int columnLength=x * unitWidth;
-				final int rowLength=y * unitHeight;
-				//Offset 偏移量位置
-				final int columnOffset=(unitWidth - viewWidth) / 2;
-				final int rowOffset=(unitHeight - viewHeight) / 2;
-				child.layout(columnLength + columnOffset,rowLength + rowOffset,columnLength + columnOffset + viewWidth,rowLength + rowOffset + viewHeight);
+					//单元格位置
+					final int columnLength=x * unitWidth;
+					final int rowLength=y * unitHeight;
+					//Offset 偏移量位置
+					final int columnOffset=(unitWidth - viewWidth) / 2;
+					final int rowOffset=(unitHeight - viewHeight) / 2;
+					child.layout(columnLength + columnOffset,rowLength + rowOffset,columnLength + columnOffset + viewWidth,rowLength + rowOffset + viewHeight);
+				}
 			}
+
+			border[0]=0;
+			border[1]=0;
+			border[2]=unitWidth*fieldColumnCount;
+			border[3]=unitHeight*fieldRowCount;
 		}
-		
-		border[0]=0;
-		border[1]=0;
-		border[2]=unitWidth*fieldColumnCount;
-		border[3]=unitHeight*fieldRowCount;
 	}
 	
 	/**
@@ -562,31 +573,29 @@ public final class FieldBlockLayout extends ViewGroup
 						scrollTo(border[0],border[1]);
 						return true;
 					}
-					else if(getScrollY() + scrolledY + unitHeight*fieldRowCount > border[3])
+					else if(getScrollY() + scrolledY + getHeight() > border[3])
 					{
-						scrollTo(border[0],border[3]);
+						scrollTo(border[0],border[3]-getHeight());
 						return true;
 					}
 					
-					scrollTo(border[0],getScrollY());
-					scrollBy(0,scrolledY);
+					scrollTo(border[0],getScrollY()-scrolledY);
 					return true;
 				}
-				else if(getScrollX() + scrolledX + unitWidth*fieldColumnCount > border[2])
+				else if(getScrollX() + scrolledX + getWidth() > border[2])
 				{
 					if(getScrollY() + scrolledY < border[1])
 					{
-						scrollTo(border[2],border[1]);
+						scrollTo(border[2]-getWidth(),border[1]);
 						return true;
 					}
-					else if(getScrollY() + scrolledY + unitHeight*fieldRowCount > border[3])
+					else if(getScrollY() + scrolledY + getHeight() > border[3])
 					{
-						scrollTo(border[2],border[3]);
+						scrollTo(border[2]-getWidth(),border[3]-getHeight());
 						return true;
 					}
 
-					scrollTo(border[2],getScrollY());
-					scrollBy(0,scrolledY);
+					scrollTo(border[2]-getWidth(),getScrollY()-scrolledY);
 					return true;
 				}
 				
