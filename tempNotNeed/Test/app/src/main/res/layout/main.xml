@@ -6,10 +6,8 @@
 	android:layout_width="match_parent">
 
 	<com.mycompany.myapp.FieldBlockLayout
-		app:fieldColumnCount="3"
-		app:fieldRowCount="3"
 		android:layout_width="match_parent"
-		android:layout_height="100dp"
+		android:layout_height="match_parent"
 		android:id="@+id/mainFieldBlockLayout1"
 		android:layout_above="@id/mainFieldBlockLayout1">
 
@@ -22,113 +20,91 @@
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000001"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000002"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000003"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000004"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000005"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000006"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000007"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000008"
 			android:layout_margin="20dp"/>
-
-	</com.mycompany.myapp.FieldBlockLayout>
-
-	<com.mycompany.myapp.FieldBlockLayout
-		app:fieldColumnCount="3"
-		app:fieldRowCount="3"
-		android:layout_width="match_parent"
-		android:layout_height="100dp"
-		android:id="@+id/mainFieldBlockLayout2"
-		android:layout_alignParentBottom="true">
-
+		
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#000009"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#00000A"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#00000B"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#00000C"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#00000D"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#00000E"
 			android:layout_margin="20dp"/>
 
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
-			android:background="#000000"
-			android:layout_margin="20dp"/>
-
-		<View
-			android:layout_height="200dp"
-			android:layout_width="200dp"
-			android:background="#000000"
-			android:layout_margin="20dp"/>
-
-		<View
-			android:layout_height="200dp"
-			android:layout_width="200dp"
-			android:background="#000000"
+			android:background="#00000F"
 			android:layout_margin="20dp"/>
 
 	</com.mycompany.myapp.FieldBlockLayout>

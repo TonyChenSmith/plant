@@ -39,6 +39,11 @@ import android.view.ViewConfiguration;
  */
 public final class FieldBlockLayout extends ViewGroup
 {
+	//常量
+	
+	//迟钝值常量
+	private final static int SLOW_VALUE = 3;
+	
 	//成员数据域
 	
 	/* 表：***** column(x)
@@ -533,8 +538,8 @@ public final class FieldBlockLayout extends ViewGroup
 				moveLocation[1]=event.getRawY();
 				lastMoveLocation[0]=moveLocation[0];
 				lastMoveLocation[1]=moveLocation[1];
-				float diffX=Math.abs(moveLocation[0]-downLocation[0]);
-				float diffY=Math.abs(moveLocation[1]-downLocation[1]);
+				float diffX=Math.abs(moveLocation[0]-downLocation[0])/SLOW_VALUE;
+				float diffY=Math.abs(moveLocation[1]-downLocation[1])/SLOW_VALUE;
 				if(diffX > mixTouchSlop || diffY > mixTouchSlop)
 				{
 					return true;
@@ -562,8 +567,8 @@ public final class FieldBlockLayout extends ViewGroup
 			case MotionEvent.ACTION_MOVE:
 				moveLocation[0]=event.getRawX();
 				moveLocation[1]=event.getRawY();
-				int scrolledX=(int)(lastMoveLocation[0]-moveLocation[0]);
-				int scrolledY=(int)(lastMoveLocation[1]-moveLocation[1]);
+				int scrolledX=(int)(lastMoveLocation[0]-moveLocation[0])/SLOW_VALUE;
+				int scrolledY=(int)(lastMoveLocation[1]-moveLocation[1])/SLOW_VALUE;
 				if(getScrollX() + scrolledX < border[0])
 				{
 					if(getScrollY() + scrolledY < border[1])
@@ -577,8 +582,7 @@ public final class FieldBlockLayout extends ViewGroup
 						return true;
 					}
 					
-					scrollTo(border[0],getScrollY());
-					scrollBy(0,scrolledY);
+					scrollTo(border[0],getScrollY()+scrolledY);
 					return true;
 				}
 				else if(getScrollX() + scrolledX + getWidth() > border[2])
@@ -594,20 +598,17 @@ public final class FieldBlockLayout extends ViewGroup
 						return true;
 					}
 
-					scrollTo(border[2]-getWidth(),getScrollY());
-					scrollBy(0,scrolledY);
+					scrollTo(border[2]-getWidth(),getScrollY()+scrolledY);
 					return true;
 				}
 				else if(getScrollY() + scrolledY < border[1])
 				{
-					scrollTo(getScrollX(),border[1]);
-					scrollBy(scrolledX,0);
+					scrollTo(getScrollX()+scrolledX,border[1]);
 					return true;
 				}
 				else if(getScrollY() + scrolledY + getHeight() > border[3])
 				{
-					scrollTo(getScrollX(),border[3]-getHeight());
-					scrollBy(scrolledX,0);
+					scrollTo(getScrollX()+scrolledX,border[3]-getHeight());
 					return true;
 				}
 				scrollBy(scrolledX,scrolledY);
