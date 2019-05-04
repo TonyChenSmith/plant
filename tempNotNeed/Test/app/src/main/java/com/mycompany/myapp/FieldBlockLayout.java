@@ -347,7 +347,7 @@ public final class FieldBlockLayout extends ViewGroup
 
 			//子视图位置表重置
 			resetViewLocationTable();
-
+			
 			//一层循环
 			for(int itr=0;itr < childrenCount;itr++)
 			{
@@ -470,21 +470,20 @@ public final class FieldBlockLayout extends ViewGroup
 							}
 						}
 					}
-
+					
 					//单元格位置
 					final int columnLength=x * unitWidth;
 					final int rowLength=y * unitHeight;
 					//Offset 偏移量位置
 					final int columnOffset=(unitWidth - viewWidth) / 2;
 					final int rowOffset=(unitHeight - viewHeight) / 2;
-					child.layout(columnLength + columnOffset,rowLength + rowOffset,columnLength + columnOffset + viewWidth,rowLength + rowOffset + viewHeight);
+					child.layout(left + columnLength + columnOffset,top + rowLength + rowOffset,left + columnLength + columnOffset + viewWidth,top + rowLength + rowOffset + viewHeight);
 				}
 			}
-
-			border[0]=0;
-			border[1]=0;
-			border[2]=unitWidth*fieldColumnCount;
-			border[3]=unitHeight*fieldRowCount;
+			border[0]=left;
+			border[1]=top;
+			border[2]=left+unitWidth*fieldColumnCount;
+			border[3]=top+unitHeight*fieldRowCount;
 		}
 	}
 	
@@ -528,7 +527,6 @@ public final class FieldBlockLayout extends ViewGroup
 				downLocation[1]=event.getRawY();
 				lastMoveLocation[0]=downLocation[0];
 				lastMoveLocation[1]=downLocation[1];
-				super.onInterceptTouchEvent(event);
 				break;
 			case MotionEvent.ACTION_MOVE:
 				moveLocation[0]=event.getRawX();
@@ -579,7 +577,8 @@ public final class FieldBlockLayout extends ViewGroup
 						return true;
 					}
 					
-					scrollTo(border[0],getScrollY()-scrolledY);
+					scrollTo(border[0],getScrollY());
+					scrollBy(0,scrolledY);
 					return true;
 				}
 				else if(getScrollX() + scrolledX + getWidth() > border[2])
@@ -595,10 +594,22 @@ public final class FieldBlockLayout extends ViewGroup
 						return true;
 					}
 
-					scrollTo(border[2]-getWidth(),getScrollY()-scrolledY);
+					scrollTo(border[2]-getWidth(),getScrollY());
+					scrollBy(0,scrolledY);
 					return true;
 				}
-				
+				else if(getScrollY() + scrolledY < border[1])
+				{
+					scrollTo(getScrollX(),border[1]);
+					scrollBy(scrolledX,0);
+					return true;
+				}
+				else if(getScrollY() + scrolledY + getHeight() > border[3])
+				{
+					scrollTo(getScrollX(),border[3]-getHeight());
+					scrollBy(scrolledX,0);
+					return true;
+				}
 				scrollBy(scrolledX,scrolledY);
 				lastMoveLocation[0]=moveLocation[0];
 				lastMoveLocation[1]=moveLocation[1];

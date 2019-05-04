@@ -2,47 +2,111 @@
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_height="wrap_content"
-	android:layout_width="wrap_content">
+	android:layout_height="match_parent"
+	android:layout_width="match_parent">
 
 	<com.mycompany.myapp.FieldBlockLayout
 		app:fieldColumnCount="3"
 		app:fieldRowCount="3"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:id="@+id/mainLinearLayout1">
+		android:layout_height="100dp"
+		android:id="@+id/mainFieldBlockLayout1"
+		android:layout_above="@id/mainFieldBlockLayout1">
 
-		<TextView
-			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:layout_width="wrap_content"
-			android:gravity="center"
-			android:id="@+id/mainTextView1"
-			android:layout_margin="20dp"/>
-		
-		<Button
-			android:layout_height="200dp"
-			android:layout_width="200dp"
-			android:layout_margin="20dp"/>
-		
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
 			android:background="#000000"
 			android:layout_margin="20dp"/>
-		
+
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
 			android:background="#000000"
 			android:layout_margin="20dp"/>
-		
+
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
 			android:background="#000000"
 			android:layout_margin="20dp"/>
-		
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+	</com.mycompany.myapp.FieldBlockLayout>
+
+	<com.mycompany.myapp.FieldBlockLayout
+		app:fieldColumnCount="3"
+		app:fieldRowCount="3"
+		android:layout_width="match_parent"
+		android:layout_height="100dp"
+		android:id="@+id/mainFieldBlockLayout2"
+		android:layout_alignParentBottom="true">
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
+		<View
+			android:layout_height="200dp"
+			android:layout_width="200dp"
+			android:background="#000000"
+			android:layout_margin="20dp"/>
+
 		<View
 			android:layout_height="200dp"
 			android:layout_width="200dp"
