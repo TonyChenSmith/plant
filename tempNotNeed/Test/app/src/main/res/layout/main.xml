@@ -9,6 +9,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/mainFieldBlockLayout1"
+		android:background="#ffff00"
 		android:layout_above="@id/mainFieldBlockLayout1">
 
 		<View

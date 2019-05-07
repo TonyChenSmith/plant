@@ -569,7 +569,7 @@ public final class FieldBlockLayout extends ViewGroup
 				moveLocation[1]=event.getRawY();
 				int scrolledX=(int)(lastMoveLocation[0]-moveLocation[0])/SLOW_VALUE;
 				int scrolledY=(int)(lastMoveLocation[1]-moveLocation[1])/SLOW_VALUE;
-				if(getScrollX() + scrolledX < border[0])
+				/*if(getScrollX() + scrolledX < border[0])
 				{
 					if(getScrollY() + scrolledY < border[1])
 					{
@@ -610,7 +610,7 @@ public final class FieldBlockLayout extends ViewGroup
 				{
 					scrollTo(getScrollX()+scrolledX,border[3]-getHeight());
 					return true;
-				}
+				}*/
 				scrollBy(scrolledX,scrolledY);
 				lastMoveLocation[0]=moveLocation[0];
 				lastMoveLocation[1]=moveLocation[1];
