@@ -17,20 +17,11 @@ import android.graphics.Rect;
 //测试用的界面
 public class TestSurfaceView extends SurfaceView
 {
-	static InputStream drawable;
-	static Bitmap draw;
 	
 	public TestSurfaceView(Context context)
 	{
 		super(context);
 		getHolder().addCallback(new CallBack());
-		try
-		{
-			drawable = getContext().getAssets().open("field.png");
-			draw=BitmapFactory.decodeStream(drawable);
-		}
-		catch(IOException e)
-		{}
 	}
 	
 	private static class CallBack implements SurfaceHolder.Callback
@@ -46,29 +37,12 @@ public class TestSurfaceView extends SurfaceView
 		public void surfaceChanged(SurfaceHolder holder,int format,int width,int height)
 		{
 			// TODO: Implement this method
-			Canvas canvas = holder.lockCanvas();
-			Log.i("Test Format",Integer.toHexString(format));
-			Log.i("Test Width",Integer.toString(width));
-			Log.i("Test Height",Integer.toString(height));
-			canvas.drawColor(Color.WHITE);
-			canvas.translate(300.5f,500.5f);
-			canvas.drawBitmap(draw,null,new Rect(0,0,draw.getWidth(),draw.getHeight()),null);
-			Log.i("Bitmap Width",Integer.toString(canvas.getWidth()));
-			Log.i("Bitmap Height",Integer.toString(canvas.getHeight()));
-			holder.unlockCanvasAndPost(canvas);
 		}
 
 		@Override
 		public void surfaceDestroyed(SurfaceHolder holder)
 		{
 			// TODO: Implement this method
-			try
-			{
-				draw.recycle();
-				drawable.close();
-			}
-			catch(IOException e)
-			{}
 		}
 	}
 }
