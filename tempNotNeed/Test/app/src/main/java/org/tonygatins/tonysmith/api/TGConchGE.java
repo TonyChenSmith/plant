@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 package org.tonygatins.tonysmith.api;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.tonygatins.tonysmith.api.TGConchGE.LocalGEResource.Pair;
 
 /**
  * conch 海螺。
@@ -36,138 +36,4 @@ import org.tonygatins.tonysmith.api.TGConchGE.LocalGEResource.Pair;
  */
 public final class TGConchGE
 {
-	private final LocalGEDrawingHandler handler;
-	
-	private TGConchGE(LocalGEDrawingHandler handler)
-	{
-		this.handler=handler;
-	}
-	
-	protected static abstract class LocalGEDrawingHandler
-	{
-		private final int width;
-		
-		private final int height;
-		
-		protected LocalGEDrawingHandler(int width,int height)
-		{
-			this.width=width;
-			this.height=height;
-		}
-		
-		//传递图像到屏幕
-		public abstract void postGraphivs(LocalGEHandler context);
-		
-		//包装一个本地的对象内容
-		public abstract LocalGEResource createResourceContext(Object localResourceContext);
-		
-		//设置底层绘制板(非显示板)
-		public abstract void setBackCanvasHandler(LocalGEHandler canvas);
-		
-		
-	}
-	
-	//资源包装类
-	protected static abstract class LocalGEResource<T>
-	{
-		private static final int UNDEFINE = -1;
-		
-		private static final HashSet<Pair> ID_SET = new HashSet<>();
-		
-		private final T context;
-		
-		protected static boolean isInit =false;
-		
-		//种类id
-		private final int id;
-		
-		protected LocalGEResource(T context,String idText)
-		{
-			if(!isInit)
-			{
-				initIDSet(ID_SET);
-				isInit=true;
-			}
-			
-			//暂时英文
-			this.context=Objects.requireNonNull(context,"Conch Engine can't use an empty resource.Pleace report the exception to developers.");
-			
-			for(Pair now : ID_SET)
-			{
-				if(now.idText.equals(idText))
-				{
-					id=now.id;
-					return;
-				}
-			}
-			
-			id=UNDEFINE;
-		}
-		
-		public final T getContext()
-		{
-			return context;
-		}
-		
-		public final int getID()
-		{
-			return id;
-		}
-		
-		protected abstract void initIDSet(Set<Pair> idSet);
-		
-		protected class Pair
-		{
-			int id;
-			String idText;
-
-			@Override
-			public boolean equals(Object obj)
-			{
-				// TODO: Implement this method
-				if(obj instanceof Pair&&((Pair)obj).id==id)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		}
-	}
-	
-	//句柄包装
-	protected static abstract class LocalGEHandler<T> extends LocalGEResource<T>
-	{
-		private static boolean isAdded = false;
-		
-		private static boolean initState;
-		
-		{
-			initState=isInit;
-			
-			if(!isAdded)
-			{
-				isInit=false;
-				isAdded=true;
-			}
-		}
-		
-		protected LocalGEHandler(T context)
-		{
-			super(context,"Conch GE Handler");
-			isInit=initState;
-		}
-
-		@Override
-		protected final void initIDSet(Set<TGConchGE.LocalGEResource<T>.Pair> idSet)
-		{
-			// TODO: Implement this method
-			Pair pair = new Pair();
-			pair.idText="Conch GE Handler";
-			pair.id=-2;
-			idSet.add(pair);
-		}
-	}
 }
