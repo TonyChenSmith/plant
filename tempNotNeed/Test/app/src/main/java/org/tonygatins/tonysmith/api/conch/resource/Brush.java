@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.tonygatins.tonysmith.api;
-
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+package org.tonygatins.tonysmith.api.conch.resource;
 
 /**
- * conch 海螺。
- * Tony Gatins Conch Graphics Engine API.
- * 海螺引擎的总核心类。具体的底层实现与系统有关。
- * 设计初衷是Tony Gatins系统的底层绘图api。
+ * 引擎绘制资源：笔刷（改变意图样式）
  * @author Tony Chen Smith
  */
-public final class TGConchGE
+public abstract class Brush<T>
 {
+	/**
+	 * 获得笔刷。
+	 * @return 本地资源对象。
+	 */
+	public abstract T getBrush();
+	
+	//慢慢添加
 }
