@@ -44,8 +44,13 @@ public final class TGConchGE
 		this.handler=handler;
 	}
 	
+	/**
+	 * 本地句柄类。
+	 * 提供所有本地的操作方法。
+	 * @author Tony Chen Smith
+	 */
 	public static abstract class LocalConchGE
 	{
-		
+		protected abstract void nativeDrawARGB();
 	}
 }
