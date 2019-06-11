@@ -51,6 +51,8 @@ public final class TGConchGE
 	 */
 	public static abstract class LocalConchGE
 	{
-		protected abstract void nativeDrawARGB();
+		protected abstract void nativeDrawARGB(int alpha,int red,int green,int blue);
+		
+		protected abstract void nativeDrawRGB(int red,int green,int blue);
 	}
 }
