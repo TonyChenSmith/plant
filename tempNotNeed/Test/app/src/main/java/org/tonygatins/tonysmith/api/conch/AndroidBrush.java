@@ -23,39 +23,27 @@
  */
 package org.tonygatins.tonysmith.api.conch;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import android.graphics.Paint;
 import org.tonygatins.tonysmith.api.conch.resource.Brush;
 
 /**
- * conch 海螺。
- * Tony Gatins Conch Graphics Engine API.
- * 海螺引擎的总核心类。具体的底层实现与系统有关。
- * 主句柄类。
- * 设计初衷是Tony Gatins系统的底层绘图api。
+ * 安卓底层实现:画笔。
  * @author Tony Chen Smith
  */
-public final class TGConchGE
+final class AndroidBrush extends Brush<Paint>
 {
-	private final LocalConchGE handler;
+	private final Paint nativeBrush;
 	
-	private TGConchGE(LocalConchGE handler)
+	protected AndroidBrush()
 	{
-		this.handler=handler;
+		this.nativeBrush=new Paint();
 	}
 	
-	/**
-	 * 本地句柄类。
-	 * 提供所有本地的操作方法。
-	 * @author Tony Chen Smith
-	 */
-	public static abstract class LocalConchGE
+	@Override
+	public Paint getBrush()
 	{
-		protected abstract void nativeDrawRGB(int red,int green,int blue);
-		protected abstract void nativeDrawARGB(int alpha,int red,int green,int blue);
-		protected abstract void nativeDrawBrush(Brush brush);
-		
-		protected abstract void nativeDrawPoint(float x,float y,Brush brush);
+		// TODO: Implement this method
+		return nativeBrush;
 	}
+	
 }
