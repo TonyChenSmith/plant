@@ -38,13 +38,6 @@ public abstract class Paper<T>
 	public abstract boolean setPaper(int width,int height);
 	
 	/**
-	 * 设置纸。
-	 * @param content 本地资源对象。
-	 * @return true为成功设置，false为设置失败。
-	 */
-	public abstract boolean setPaper(T content);
-	
-	/**
 	 * 设置纸。该方法性质为设置大小深拷贝。
 	 * @param parent 父辈纸资源对象。
 	 * @return true为成功设置，false为设置失败。
@@ -55,7 +48,7 @@ public abstract class Paper<T>
 	 * 获得纸（本地资源对象）。
 	 * @return 本地的资源对象。
 	 */
-	public abstract T getPaper();
+	protected abstract T getPaper();
 	
 	/**
 	 * 获得纸张宽度。

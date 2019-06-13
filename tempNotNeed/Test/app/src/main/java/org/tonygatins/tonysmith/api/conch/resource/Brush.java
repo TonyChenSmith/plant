@@ -30,10 +30,16 @@ package org.tonygatins.tonysmith.api.conch.resource;
 public abstract class Brush<T>
 {
 	/**
+	 * 设置笔刷。
+	 * @param brush 笔刷对象。
+	 */
+	public abstract void set(Brush brush);
+	
+	/**
 	 * 获得笔刷。
 	 * @return 本地资源对象。
 	 */
-	public abstract T getBrush();
+	protected abstract T getBrush();
 	
 	//慢慢添加
 }
