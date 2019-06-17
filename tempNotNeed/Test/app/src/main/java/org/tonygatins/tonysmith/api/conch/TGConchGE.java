@@ -15,13 +15,18 @@ import org.tonygatins.tonysmith.api.conch.resource.Brush;
  */
 public final class TGConchGE
 {
+	static {
+		Class load=AndroidColor.class;
+		load.getClassLoader();
+	}
+
 	private final LocalConchGE handler;
-	
+
 	private TGConchGE(LocalConchGE handler)
 	{
-		this.handler=handler;
+		this.handler = handler;
 	}
-	
+
 	/**
 	 * 本地句柄类。
 	 * 提供所有本地的操作方法。
@@ -32,7 +37,7 @@ public final class TGConchGE
 		protected abstract void nativeDrawRGB(int red,int green,int blue);
 		protected abstract void nativeDrawARGB(int alpha,int red,int green,int blue);
 		protected abstract void nativeDrawBrush(Brush brush);
-		
+
 		protected abstract void nativeDrawPoint(float x,float y,Brush brush);
 	}
 }

@@ -9,7 +9,7 @@ import org.tonygatins.tonysmith.api.conch.AndroidColor;
 public abstract class Color
 {
 	//本地方法句柄
-	private static final Color NATIVE_HANDLER=new AndroidColor();
+	private static Color NATIVE_HANDLER = null;
 	
 	/**
 	 * 获得本地颜色值。(因为颜色的实现都是数字变量）
@@ -149,6 +149,10 @@ public abstract class Color
 	 */
 	public final static Color createColor(int alpha,float[] hsv)
 	{
+		if(NATIVE_HANDLER==null)
+		{
+			return null;
+		}
 		return NATIVE_HANDLER.nativeCreateColor(alpha,hsv);
 	}
 	
@@ -159,6 +163,10 @@ public abstract class Color
 	 */
 	public final static Color createColor(float[] hsv)
 	{
+		if(NATIVE_HANDLER==null)
+		{
+			return null;
+		}
 		return NATIVE_HANDLER.nativeCreateColor(hsv);
 	}
 	
@@ -169,6 +177,10 @@ public abstract class Color
 	 */
 	public final static Color createColor(String colorText)
 	{
+		if(NATIVE_HANDLER==null)
+		{
+			return null;
+		}
 		return NATIVE_HANDLER.nativeCreateColor(colorText);
 	}
 	
@@ -181,6 +193,10 @@ public abstract class Color
 	 */
 	public final static Color createColor(int red,int green,int blue)
 	{
+		if(NATIVE_HANDLER==null)
+		{
+			return null;
+		}
 		return NATIVE_HANDLER.nativeCreateColor(red,green,blue);
 	}
 	
@@ -194,6 +210,22 @@ public abstract class Color
 	 */
 	public final static Color createColor(int alpha,int red,int green,int blue)
 	{
+		if(NATIVE_HANDLER==null)
+		{
+			return null;
+		}
 		return NATIVE_HANDLER.nativeCreateColor(alpha,red,green,blue);
+	}
+	
+	/**
+	 * （给本地化类使用）注册本地句柄。
+	 * @param handler 本地的颜料对象。
+	 */
+	public final static void registerNativeHandler(Color handler)
+	{
+		if(NATIVE_HANDLER == null)
+		{
+			NATIVE_HANDLER=handler;
+		}
 	}
 }
