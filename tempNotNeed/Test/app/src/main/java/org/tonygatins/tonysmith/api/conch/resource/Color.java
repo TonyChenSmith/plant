@@ -8,9 +8,6 @@ import org.tonygatins.tonysmith.api.conch.AndroidColor;
  */
 public abstract class Color
 {
-	//本地方法句柄
-	private static Color NATIVE_HANDLER = null;
-	
 	/**
 	 * 获得本地颜色值。(因为颜色的实现都是数字变量）
 	 * @return 颜色的整型数字。
@@ -46,47 +43,6 @@ public abstract class Color
 	 * @return 直观颜色数组对象。
 	 */
 	public abstract float[] getHSV();
-	
-	/**
-	 * 本地通过透明度值与直观颜色数组对象构造颜料对象。
-	 * @param alpha 透明度整型值。
-	 * @param hsv 直观颜色数组对象。
-	 * @return 一个相对应的颜料对象。
-	 */
-	protected abstract Color nativeCreateColor(int alpha,float[] hsv);
-	
-	/**
-	 * 本地通过直观颜色数组对象构造颜料对象。
-	 * @param hsv 直观颜色数组对象。
-	 * @return 一个相对应的颜料对象。
-	 */
-	protected abstract Color nativeCreateColor(float[] hsv);
-	
-	/**
-	 * 本地通过颜色字符串对象构造颜料对象。
-	 * @param colorText 颜色字符串对象。
-	 * @return 一个相对应的颜料对象。
-	 */
-	protected abstract Color nativeCreateColor(String colorText);
-	
-	/**
-	 * 本地通过红色值，绿色值，蓝色值构造颜料对象。
-	 * @param red 红色值。
-	 * @param green 绿色值。
-	 * @param blue 蓝色值。
-	 * @return 一个相对应的颜料对象。
-	 */
-	protected abstract Color nativeCreateColor(int red,int green,int blue);
-	
-	/**
-	 * 本地通过透明度值，红色值，绿色值，蓝色值构造颜料对象。
-	 * @param alpha 透明度值。
-	 * @param red 红色值。
-	 * @param green 绿色值。
-	 * @param blue 蓝色值。
-	 * @return 一个相对应的颜料对象。
-	 */
-	protected abstract Color nativeCreateColor(int alpha,int red,int green,int blue);
 	
 	/**
 	 * 通过透明度值与直观颜色数组对象设置颜料对象。
@@ -140,92 +96,4 @@ public abstract class Color
 	 * @return true为已回收，false为未回收。
 	 */
 	public abstract boolean isRecycled();
-	
-	/**
-	 * 通过透明度值与直观颜色数组对象构造颜料对象。
-	 * @param alpha 透明度整型值。
-	 * @param hsv 直观颜色数组对象。
-	 * @return 一个相对应的颜料对象。
-	 */
-	public final static Color createColor(int alpha,float[] hsv)
-	{
-		if(NATIVE_HANDLER==null)
-		{
-			return null;
-		}
-		return NATIVE_HANDLER.nativeCreateColor(alpha,hsv);
-	}
-	
-	/**
-	 * 本地通过直观颜色数组对象构造颜料对象。
-	 * @param hsv 直观颜色数组对象。
-	 * @return 一个相对应的颜料对象。
-	 */
-	public final static Color createColor(float[] hsv)
-	{
-		if(NATIVE_HANDLER==null)
-		{
-			return null;
-		}
-		return NATIVE_HANDLER.nativeCreateColor(hsv);
-	}
-	
-	/**
-	 * 本地通过颜色字符串对象构造颜料对象。
-	 * @param colorText 颜色字符串对象。
-	 * @return 一个相对应的颜料对象。
-	 */
-	public final static Color createColor(String colorText)
-	{
-		if(NATIVE_HANDLER==null)
-		{
-			return null;
-		}
-		return NATIVE_HANDLER.nativeCreateColor(colorText);
-	}
-	
-	/**
-	 * 本地通过红色值，绿色值，蓝色值构造颜料对象。
-	 * @param red 红色值。
-	 * @param green 绿色值。
-	 * @param blue 蓝色值。
-	 * @return 一个相对应的颜料对象。
-	 */
-	public final static Color createColor(int red,int green,int blue)
-	{
-		if(NATIVE_HANDLER==null)
-		{
-			return null;
-		}
-		return NATIVE_HANDLER.nativeCreateColor(red,green,blue);
-	}
-	
-	/**
-	 * 本地通过透明度值，红色值，绿色值，蓝色值构造颜料对象。
-	 * @param alpha 透明度值。
-	 * @param red 红色值。
-	 * @param green 绿色值。
-	 * @param blue 蓝色值。
-	 * @return 一个相对应的颜料对象。
-	 */
-	public final static Color createColor(int alpha,int red,int green,int blue)
-	{
-		if(NATIVE_HANDLER==null)
-		{
-			return null;
-		}
-		return NATIVE_HANDLER.nativeCreateColor(alpha,red,green,blue);
-	}
-	
-	/**
-	 * （给本地化类使用）注册本地句柄。
-	 * @param handler 本地的颜料对象。
-	 */
-	public final static void registerNativeHandler(Color handler)
-	{
-		if(NATIVE_HANDLER == null)
-		{
-			NATIVE_HANDLER=handler;
-		}
-	}
 }

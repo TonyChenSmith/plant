@@ -8,11 +8,6 @@ import org.tonygatins.tonysmith.api.conch.resource.Color;
  */
 final class AndroidColor extends Color
 {
-	//注册句柄。
-	static {
-		Color.registerNativeHandler(new AndroidColor());
-	}
-	
 	//初始化属性。
 	private AndroidColor()
 	{
@@ -54,6 +49,10 @@ final class AndroidColor extends Color
 	public int getNativeColor()
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		return colorId;
 	}
 	
@@ -65,6 +64,10 @@ final class AndroidColor extends Color
 	public int getAlpha()
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		return alpha;
 	}
 	
@@ -76,6 +79,10 @@ final class AndroidColor extends Color
 	public int getRed()
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		return red;
 	}
 	
@@ -87,6 +94,10 @@ final class AndroidColor extends Color
 	public int getGreen()
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		return green;
 	}
 
@@ -98,6 +109,10 @@ final class AndroidColor extends Color
 	public int getBlue()
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		return blue;
 	}
 	
@@ -109,6 +124,10 @@ final class AndroidColor extends Color
 	public float[] getHSV()
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		float[] result=new float[3];
 		result[0]=hsv[0];
 		result[1]=hsv[1];
@@ -122,8 +141,7 @@ final class AndroidColor extends Color
 	 * @param hsv 直观颜色数组对象。
 	 * @return 一个相对应的颜料对象。
 	 */
-	@Override
-	protected Color nativeCreateColor(int alpha,float[] hsv)
+	protected static Color nativeCreateColor(int alpha,float[] hsv)
 	{
 		// TODO: Implement this method
 		AndroidColor result=new AndroidColor();
@@ -143,8 +161,7 @@ final class AndroidColor extends Color
 	 * @param hsv 直观颜色数组对象。
 	 * @return 一个相对应的颜料对象。
 	 */
-	@Override
-	protected Color nativeCreateColor(float[] hsv)
+	protected static Color nativeCreateColor(float[] hsv)
 	{
 		// TODO: Implement this method
 		AndroidColor result=new AndroidColor();
@@ -164,8 +181,7 @@ final class AndroidColor extends Color
 	 * @param colorText 颜色字符串对象。
 	 * @return 一个相对应的颜料对象。
 	 */
-	@Override
-	protected Color nativeCreateColor(String colorText)
+	protected static Color nativeCreateColor(String colorText)
 	{
 		// TODO: Implement this method
 		AndroidColor result=new AndroidColor();
@@ -185,8 +201,7 @@ final class AndroidColor extends Color
 	 * @param blue 蓝色值。
 	 * @return 一个相对应的颜料对象。
 	 */
-	@Override
-	protected Color nativeCreateColor(int red,int green,int blue)
+	protected static Color nativeCreateColor(int red,int green,int blue)
 	{
 		// TODO: Implement this method
 		AndroidColor result=new AndroidColor();
@@ -207,8 +222,7 @@ final class AndroidColor extends Color
 	 * @param blue 蓝色值。
 	 * @return 一个相对应的颜料对象。
 	 */
-	@Override
-	protected Color nativeCreateColor(int alpha,int red,int green,int blue)
+	protected static Color nativeCreateColor(int alpha,int red,int green,int blue)
 	{
 		// TODO: Implement this method
 		AndroidColor result=new AndroidColor();
@@ -230,6 +244,10 @@ final class AndroidColor extends Color
 	public void setColor(int alpha,float[] hsv)
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		this.colorId=android.graphics.Color.HSVToColor(alpha,hsv);
 		this.red=android.graphics.Color.red(this.colorId);
 		this.green=android.graphics.Color.green(this.colorId);
@@ -248,6 +266,10 @@ final class AndroidColor extends Color
 	public void setColor(float[] hsv)
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		this.colorId=android.graphics.Color.HSVToColor(hsv);
 		this.red=android.graphics.Color.red(this.colorId);
 		this.green=android.graphics.Color.green(this.colorId);
@@ -266,6 +288,10 @@ final class AndroidColor extends Color
 	public void setColor(String colorText)
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		this.colorId=android.graphics.Color.parseColor(colorText);
 		this.red=android.graphics.Color.red(this.colorId);
 		this.green=android.graphics.Color.green(this.colorId);
@@ -284,6 +310,10 @@ final class AndroidColor extends Color
 	public void setColor(int red,int green,int blue)
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		this.colorId=android.graphics.Color.rgb(red,green,blue);
 		this.red=red;
 		this.green=green;
@@ -303,6 +333,10 @@ final class AndroidColor extends Color
 	public void setColor(int alpha,int red,int green,int blue)
 	{
 		// TODO: Implement this method
+		if(isRec)
+		{
+			throw new ConchGEException("");
+		}
 		this.colorId=android.graphics.Color.argb(alpha,red,green,blue);
 		this.red=red;
 		this.green=green;
@@ -319,6 +353,10 @@ final class AndroidColor extends Color
 	public void setColor(Color parent)
 	{
 		// TODO: Implement this method
+		if(isRec||parent.isRecycled())
+		{
+			throw new ConchGEException("");
+		}
 		this.colorId=parent.getNativeColor();
 		this.alpha=parent.getAlpha();
 		this.red=parent.getRed();
