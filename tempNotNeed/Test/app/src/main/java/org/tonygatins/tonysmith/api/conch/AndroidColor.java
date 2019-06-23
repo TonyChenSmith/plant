@@ -190,7 +190,7 @@ final class AndroidColor extends Color
 		result.green=android.graphics.Color.green(result.colorId);
 		result.blue=android.graphics.Color.blue(result.colorId);
 		result.alpha=android.graphics.Color.alpha(result.colorId);
-		android.graphics.Color.colorToHSV(result.colorId,hsv);
+		android.graphics.Color.colorToHSV(result.colorId,result.hsv);
 		return result;
 	}
 
@@ -210,7 +210,7 @@ final class AndroidColor extends Color
 		result.green=green;
 		result.blue=blue;
 		result.alpha=android.graphics.Color.alpha(result.colorId);
-		android.graphics.Color.colorToHSV(result.colorId,hsv);
+		android.graphics.Color.colorToHSV(result.colorId,result.hsv);
 		return result;
 	}
 
@@ -231,7 +231,7 @@ final class AndroidColor extends Color
 		result.green=green;
 		result.blue=blue;
 		result.alpha=alpha;
-		android.graphics.Color.colorToHSV(result.colorId,hsv);
+		android.graphics.Color.colorToHSV(result.colorId,result.hsv);
 		return result;
 	}
 
