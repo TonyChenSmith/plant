@@ -22,4 +22,10 @@ public abstract class Font<T>
 	 * 回收字体。
 	 */
 	public abstract void recycle();
+	
+	/**
+	 * 获得字体的风格。
+	 * @return 字体风格的枚举常量数组。
+	 */
+	public abstract FontStyle[] getStyles();
 }

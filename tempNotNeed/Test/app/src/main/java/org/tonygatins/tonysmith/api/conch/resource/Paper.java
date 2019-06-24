@@ -38,4 +38,15 @@ public abstract class Paper<T>
 	 * @return 纸张的长度(高度）。
 	 */
 	public abstract int getPaperHeight();
+	
+	/**
+	 * 回收方法。（不一定会进行有效实现）
+	 */
+	public abstract boolean isRecycled();
+	
+	/**
+	 * 判断是否已回收。
+	 * @return true为已回收，false为未回收。
+	 */
+	public abstract void recycle();
 }
