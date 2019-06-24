@@ -31,7 +31,7 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 	//单色绘制
 	
 	/**
-	 * 绘制RGB颜色。
+	 * 本地绘制RGB颜色。
 	 * @param red 红色值。
 	 * @param green 绿色值。
 	 * @param blue 蓝色值。
@@ -58,7 +58,7 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 	}
 
 	/**
-	 * 绘制画笔。
+	 * 本地绘制画笔。
 	 * @param brush 画笔对象。
 	 */
 	@Override
@@ -71,7 +71,7 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 	//绘制点线
 	
 	/**
-	 * 绘制一个点。
+	 * 本地绘制一个点。
 	 * @param x 横坐标。
 	 * @param y 纵坐标。
 	 * @param brush 画笔对象。
@@ -82,4 +82,6 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 		// TODO: Implement this method
 		background.drawPoint(x,y,(Paint)brush.getBrush());
 	}
+	
+	
 }
