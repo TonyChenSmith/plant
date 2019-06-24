@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import org.tonygatins.tonysmith.api.conch.resource.Brush;
+import org.tonygatins.tonysmith.api.conch.resource.Paper;
 
 /**
  * 安卓底层实现:句柄。
@@ -16,9 +17,9 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 	
 	private final Bitmap backgroundMap;
 	
-	protected AndroidConchGE(int backgroundWidth,int backgroundHeight)
+	protected AndroidConchGE(Paper paper)
 	{
-		backgroundMap=Bitmap.createBitmap(backgroundWidth,backgroundHeight,Bitmap.Config.ARGB_8888);
+		backgroundMap=(Bitmap)paper.getNativePaper();
 		background=new Canvas(backgroundMap);
 	}
 	
@@ -43,7 +44,7 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 	}
 	
 	/**
-	 * 绘制ARGB颜色。
+	 * 本地绘制ARGB颜色。
 	 * @param alpha 透明度值。
 	 * @param red 红色值。
 	 * @param green 绿色值。

@@ -15,11 +15,6 @@ import org.tonygatins.tonysmith.api.conch.resource.Brush;
  */
 public final class TGConchGE
 {
-	static {
-		Class load=AndroidColor.class;
-		load.getClassLoader();
-	}
-
 	private final LocalConchGE handler;
 
 	private TGConchGE(LocalConchGE handler)
