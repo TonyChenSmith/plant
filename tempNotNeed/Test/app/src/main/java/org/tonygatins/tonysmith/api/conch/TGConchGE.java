@@ -26,23 +26,6 @@ public final class TGConchGE
 		//单色绘制。
 		
 		/**
-		 * 本地绘制RGB颜色。
-		 * @param red 红色值。
-		 * @param green 绿色值。
-		 * @param blue 蓝色值。
-		 */
-		protected abstract void nativeDrawRGB(int red,int green,int blue);
-		
-		/**
-		 * 本地绘制ARGB颜色。
-		 * @param alpha 透明度值。
-		 * @param red 红色值。
-		 * @param green 绿色值。
-		 * @param blue 蓝色值。
-		 */
-		protected abstract void nativeDrawARGB(int alpha,int red,int green,int blue);
-		
-		/**
 		 * 本地绘制画笔。
 		 * @param brush 画笔对象。
 		 */

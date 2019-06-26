@@ -53,8 +53,14 @@ public final class Painter
 		handler.nativeDrawBrush(brush);
 	}
 	
+	/**
+	 * 绘制颜料。
+	 * @param color 颜料对象。
+	 */
 	public void drawColor(Color color)
 	{
-		
+		handler.nativeDrawColor(color);
 	}
+	
+	//点线绘制
 }

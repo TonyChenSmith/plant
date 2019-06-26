@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import org.tonygatins.tonysmith.api.conch.resource.Brush;
 import org.tonygatins.tonysmith.api.conch.resource.Paper;
+import org.tonygatins.tonysmith.api.conch.resource.Color;
 
 /**
  * 安卓底层实现:句柄。
@@ -13,8 +14,10 @@ import org.tonygatins.tonysmith.api.conch.resource.Paper;
  */
 final class AndroidConchGE extends TGConchGE.LocalConchGE
 {
+	//本地画布对象。
 	private final Canvas background;
 	
+	//本地画布基底纸张对象。
 	private final Bitmap backgroundMap;
 	
 	protected AndroidConchGE(Paper paper)
@@ -68,6 +71,17 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 		background.drawPaint((Paint)brush.getBrush());
 	}
 	
+	/**
+	 * 本地绘制颜料。
+	 * @param color 颜料对象。
+	 */
+	@Override
+	protected void nativeDrawColor(Color color)
+	{
+		// TODO: Implement this method
+		background.drawColor(color.getNativeColor());
+	}
+	
 	//绘制点线
 	
 	/**
@@ -82,6 +96,4 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 		// TODO: Implement this method
 		background.drawPoint(x,y,(Paint)brush.getBrush());
 	}
-	
-	
 }
