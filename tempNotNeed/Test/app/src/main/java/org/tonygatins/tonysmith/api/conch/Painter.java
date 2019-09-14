@@ -29,7 +29,7 @@ public final class Painter
 	 */
 	public void drawRGB(int red,int green,int blue)
 	{
-		handler.nativeDrawRGB(red,green,blue);
+		
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public final class Painter
 	 */
 	public void drawARGB(int alpha,int red,int green,int blue)
 	{
-		handler.nativeDrawARGB(alpha,red,green,blue);
+		
 	}
 	
 	/**

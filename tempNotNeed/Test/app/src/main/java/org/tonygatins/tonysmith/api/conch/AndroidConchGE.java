@@ -32,33 +32,6 @@ final class AndroidConchGE extends TGConchGE.LocalConchGE
 	}
 	
 	//单色绘制
-	
-	/**
-	 * 本地绘制RGB颜色。
-	 * @param red 红色值。
-	 * @param green 绿色值。
-	 * @param blue 蓝色值。
-	 */
-	@Override
-	protected void nativeDrawRGB(int red,int green,int blue)
-	{
-		// TODO: Implement this method
-		background.drawRGB(red,green,blue);
-	}
-	
-	/**
-	 * 本地绘制ARGB颜色。
-	 * @param alpha 透明度值。
-	 * @param red 红色值。
-	 * @param green 绿色值。
-	 * @param blue 蓝色值。
-	 */
-	@Override
-	protected void nativeDrawARGB(int alpha,int red,int green,int blue)
-	{
-		// TODO: Implement this method
-		background.drawARGB(alpha,red,green,blue);
-	}
 
 	/**
 	 * 本地绘制画笔。
