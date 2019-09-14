@@ -7,9 +7,9 @@ android {
     defaultConfig {
         applicationId "org.tonygatins.tonysmith.conch"
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.0-alpha"
     }
     buildTypes {
         release {
