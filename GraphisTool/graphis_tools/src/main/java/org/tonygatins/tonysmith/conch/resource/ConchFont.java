@@ -31,16 +31,19 @@ public final class ConchFont
 	private static final Map<String,ConchFont> FONTS_FAMILY=new HashMap<>();
 	
 	//字体文件路径
-	private static final Map<String,String> FONTS_PATHS=new HashMap<>();
+	private static final Map<String,String[]> FONTS_PATHS=new HashMap<>();
 	
 	//构造一个字体对象。
 	private ConchFont(String key)
 	{
-		resource=Typeface.createFromFile(FONTS_PATHS.get(key));
+		resource=Typeface.createFromFile(FONTS_PATHS.get(key)[0]);
 		FONTS_FAMILY.put(key,this);
 	}
 	
 	//下面耦合性很高
+	
+	//字体目录
+	private final static String FONTS_DIR="/system/fonts/";
 	
 	//获得安卓配置文件地址
 	private static String[] getSystemFontsConfigFileName()
@@ -59,7 +62,7 @@ public final class ConchFont
 		}
 	}
 	
-	//解析配置文件，key为以下格式：(name)？-style-weight
+	//解析配置文件，key为以下格式：name-style-variant-weight
 	//weight为数字，如果有别名也会记录，没有样式的话为Nomarl，sans-serif会改为SansSerif，variant在style最后，用_联接，没有则为Normal
 	private static void parseSystemFontsConfig()
 	{
@@ -104,18 +107,37 @@ public final class ConchFont
 	private static class FontsConfig19 extends DefaultHandler
 	{
 		//元素内容
+		private LinkedList<NamePair> names=new LinkedList<>();
+		private LinkedList<String> preArray=new LinkedList<>();
+		private String catchString;
 		
-		//是否到字体家族，名字集，文件集。
+		private boolean isPrepare = false,isFile =false,isName =false;
 		
-		protected FontsConfig19()
-		{}
+		//key四元素。
+		private char variant,style;
+		private byte weight;
+		private String name;
+		
+		protected FontsConfig19(){}
 
 		//开始分析元素
 		@Override
 		public void startElement(String uri,String localName,String qName,Attributes attributes)
 		{
 			// TODO: Implement this method
-			
+			switch(localName)
+			{
+				case "family":
+					isPrepare=true;
+					break;
+				case "name":
+					isName=true;
+					break;
+				case "file":
+					isFile=true;
+					variant=FontKey.getFontVariant19(attributes);
+					break;
+			}
 		}
 		
 		//截取字符串
@@ -123,6 +145,10 @@ public final class ConchFont
 		public void characters(char[] ch,int start,int length)
 		{
 			// TODO: Implement this method
+			if(isFile||isName)
+			{
+				catchString=new String(ch,start,length);
+			}
 		}
 
 		//结束分析元素
@@ -130,7 +156,86 @@ public final class ConchFont
 		public void endElement(String uri,String localName,String qName)
 		{
 			// TODO: Implement this method
+			switch(localName)
+			{
+				case "family":
+					isPrepare=false;
+					names.clear();
+					break;
+				case "name":
+					isName=false;
+					NamePair pair=new NamePair();
+					pair.weight=FontKey.getFontWeight19(catchString);
+					pair.name=FontKey.turnBigHumpName19(catchString,false);
+					names.add(pair);
+					break;
+				case "file":
+					isFile=false;
+					
+					preArray.add(FONTS_DIR.concat(catchString));
+					
+					//文件名键
+					style=FontKey.getFontStyle19(catchString);
+					byte tmpWeight=FontKey.getFontWeight19(catchString);
+					if(tmpWeight==-1)
+					{
+						weight=4;
+					}
+					else
+					{
+						weight=tmpWeight;
+					}
+					name=FontKey.turnBigHumpName19(catchString,true);
+					preArray.add(FontKey.makeKey(name,style,variant,weight));
+					
+					weight=tmpWeight;
+					
+					//别名
+					for(NamePair everyName:names)
+					{
+						everyName.setWeight(weight);
+						preArray.add(FontKey.makeKey(everyName.name,style,variant,everyName.weight));
+					}
+					
+					//全注册
+					String[] keySet=new String[preArray.size()];
+					preArray.toArray(keySet);
+					for(int index=1;index<keySet.length;index++)
+					{
+						FONTS_PATHS.put(keySet[index],keySet);
+					}
+					preArray.clear();
+					break;
+			}
+		}
+		
+		private class NamePair
+		{
+			String name;
+			byte weight=-1;
 			
+			protected void setWeight(byte tmpWeight)
+			{
+				if(tmpWeight==weight&&tmpWeight!=-1)
+				{
+					return;
+				}
+				else if(tmpWeight==-1)
+				{
+					if(weight!=-1)
+					{
+						return;
+					}
+					else
+					{
+						weight=4;
+					}
+				}
+				else
+				{
+					weight=tmpWeight;
+				}
+			}
 		}
 	}
 	
