@@ -15,6 +15,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.Attributes;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import org.xmlpull.v1.sax2.Driver;
 
 /**
  * 资源：字体。
@@ -40,8 +41,6 @@ public final class ConchFont
 	}
 	
 	//下面耦合性很高
-	
-	private static final String FONTS_DIR="/system/fonts";
 	
 	//获得安卓配置文件地址
 	private static String[] getSystemFontsConfigFileName()
@@ -86,7 +85,8 @@ public final class ConchFont
 	{
 		try
 		{
-			XMLReader reader19 = XMLReaderFactory.createXMLReader();
+			//驱动程序
+			XMLReader reader19 = XMLReaderFactory.createXMLReader("org.xmlpull.v1.sax2.Driver");
 			reader19.setContentHandler(new FontsConfig19());
 			reader19.parse(new InputSource(configPath));
 		}
@@ -104,14 +104,8 @@ public final class ConchFont
 	private static class FontsConfig19 extends DefaultHandler
 	{
 		//元素内容
-		private List<String> alias = new LinkedList<>();
-		private List<String> fileName = new LinkedList<>();
-		private List<String> fixedAlias = new LinkedList<>();
-		private List<String> fixedKey = new LinkedList<>();
-		private String variant="";
 		
 		//是否到字体家族，名字集，文件集。
-		private boolean isStartFontFamily=false,isStartNameSet=false,isStartFileSet=false;
 		
 		protected FontsConfig19()
 		{}
@@ -121,24 +115,7 @@ public final class ConchFont
 		public void startElement(String uri,String localName,String qName,Attributes attributes)
 		{
 			// TODO: Implement this method
-			if(localName.equals("family"))
-			{
-				isStartFontFamily=true;
-			}
 			
-			if(localName.equals("name")&&isStartFontFamily)
-			{
-				isStartNameSet=true;
-			}
-			
-			if(localName.equals("file")&&isStartFontFamily)
-			{
-				isStartFileSet=true;
-				if(attributes.getLength()!=0)
-				{
-					variant=attributes.getValue(0).concat("_");
-				}
-			}
 		}
 		
 		//截取字符串
@@ -146,16 +123,6 @@ public final class ConchFont
 		public void characters(char[] ch,int start,int length)
 		{
 			// TODO: Implement this method
-			if(isStartNameSet)
-			{
-				alias.add(new String(ch,start,length));
-			}
-			
-			if(isStartFileSet)
-			{
-				fileName.add(variant.concat(new String(ch,start,length)));
-				variant="";
-			}
 		}
 
 		//结束分析元素
@@ -163,70 +130,12 @@ public final class ConchFont
 		public void endElement(String uri,String localName,String qName)
 		{
 			// TODO: Implement this method
-			if(localName.equals("family"))
-			{
-				isStartFontFamily=false;
-				
-				//别名处理
-				if(alias.size()!=0)
-				{
-					for(String simple : alias)
-					{
-						int index=simple.indexOf("sans-serif");
-						if(index>=0)
-						{
-							fixedAlias.add("SansSerif");
-							continue;
-						}
-						
-						int index1 = 0;
-						boolean isStart = false;
-						StringBuilder newAilas = new StringBuilder(simple.length());
-						char temp[]=simple.toCharArray();
-						for(int tempItr=0;tempItr<temp.length;tempItr++)
-						{
-							if(Character.isLetter(temp[tempItr]))
-							{
-								if(!isStart)
-								{
-									isStart=!isStart;
-									index1=tempItr;
-								}
-								
-								if(tempItr==temp.length-1)
-								{
-									if(Character.isLowerCase(temp[index1]))
-									{
-										temp[index1]=(char)(temp[index1]-32);
-									}
-									newAilas.append(new String(temp,index1,tempItr-index1+1));
-									isStart=!isStart;
-								}
-							}
-							
-							if(Character.isSpace(temp[tempItr])&&isStart)
-							{
-								if(Character.isLowerCase(temp[index1]))
-								{
-									temp[index1]=(char)(temp[index1]-32);
-								}
-								newAilas.append(new String(temp,index1,tempItr-index1));
-								isStart=!isStart;
-							}
-						}
-					}
-				}
-			}
-
-			if(localName.equals("name")&&isStartFontFamily)
-			{
-				isStartNameSet=false;
-			}
-
-			if(localName.equals("file")&&isStartFontFamily)
-			{
-				isStartFileSet=false;
-			}
+			
 		}
+	}
+	
+	static
+	{
+		parseSystemFontsConfig();
 	}
 }

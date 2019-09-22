@@ -2,4 +2,5 @@
 /tempNotNeed/Test/app/build
 /AndroidNDKExample/libs
 /AndroidNDKExample/obj
-/GraphisTool/app/build
+/GraphisTool/graphis_tools/build
+/Sax2Test/bin
