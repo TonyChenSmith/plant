@@ -1,5 +1,6 @@
 package org.tonygatins.tonysmith.conch.resource;
 
+import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import java.io.File;
@@ -17,12 +18,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-import android.content.res.AssetManager;
 
 /**
  * 资源：字体。
  * 由于实现问题，这里不会解耦本地代码，搬运至其他平台时需要重写。
  * 软加载字体，不需要时只保留路径。该平台不需要回收。
+ * @author Tony Chen Smith
  */
 public final class ConchFont
 {
@@ -135,6 +136,11 @@ public final class ConchFont
 		return result;
 	}
 	
+	//回收自身(空)
+	public void recycle()
+	{
+	}
+	
 	//返回第一个名字
 	private String getFirstName()
 	{
@@ -142,6 +148,25 @@ public final class ConchFont
 	}
 	
 	//静态
+	
+	//回收所有字体资源
+	public static void recycleAll()
+	{
+		FONTS_FAMILY.clear();
+	}
+	
+	//销毁类
+	public static void removeClass()
+	{
+		recycleAll();
+		FONTS_PATHS.clear();
+	}
+	
+	//检查是否销毁
+	public static boolean isRemoved()
+	{
+		return FONTS_PATHS.isEmpty();
+	}
 	
 	//通过字体名字构造字体。
 	public static ConchFont create(String name)
