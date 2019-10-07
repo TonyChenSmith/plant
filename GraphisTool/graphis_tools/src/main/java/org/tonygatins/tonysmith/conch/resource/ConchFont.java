@@ -2,6 +2,7 @@ package org.tonygatins.tonysmith.conch.resource;
 
 import android.graphics.Typeface;
 import android.os.Build;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+import android.content.res.AssetManager;
 
 /**
  * 资源：字体。
@@ -39,7 +41,7 @@ public final class ConchFont
 	//字体文件路径
 	private static final Map<String,String[]> FONTS_PATHS=new HashMap<>();
 	
-	//构造一个字体对象。
+	//通过键构造一个字体对象。
 	private ConchFont(String key)
 	{
 		String[] keyArray=FONTS_PATHS.get(key);
@@ -65,6 +67,43 @@ public final class ConchFont
 		}
 		
 		Arrays.sort(names);
+	}
+	
+	//文件创建
+	private ConchFont(File file,String key)
+	{
+		resource=Typeface.createFromFile(file);
+		
+		Pattern pattern=Pattern.compile("([A-Za-z]+)-([IN])-([CIN])-([1-9])");
+		names=new String[1];
+
+		Matcher mainMatcher=pattern.matcher(key);
+		mainMatcher.find();
+
+		names[0]=mainMatcher.group(1);
+		fontStyle=FontKey.toStyleObject(mainMatcher.group(2));
+		fontVariant=FontKey.toVariantObject(mainMatcher.group(3));
+		fontWeight=FontKey.toWeightObject(mainMatcher.group(4));
+		FONTS_FAMILY.put(key,this);
+	}
+	
+	//安卓资源文件创建
+	private ConchFont(AssetManager am,String path,String key)
+	{
+		resource=Typeface.createFromAsset(am,path);
+
+		Pattern pattern=Pattern.compile("([A-Za-z]+)-([IN])-([CIN])-([1-9])");
+		names=new String[1];
+
+		Matcher mainMatcher=pattern.matcher(key);
+		mainMatcher.find();
+
+		names[0]=mainMatcher.group(1);
+		fontStyle=FontKey.toStyleObject(mainMatcher.group(2));
+		fontVariant=FontKey.toVariantObject(mainMatcher.group(3));
+		fontWeight=FontKey.toWeightObject(mainMatcher.group(4));
+		
+		FONTS_FAMILY.put(key,this);
 	}
 	
 	//获得字体风格
@@ -161,6 +200,68 @@ public final class ConchFont
 			else
 			{
 				return null;
+			}
+		}
+	}
+	
+	//通过字体文件，字体名字，风格，形式和权重构造字体。名字是conch风格。
+	public static ConchFont create(String fontFile,String name,ConchFontAttribute.Style style,ConchFontAttribute.Variant variant,ConchFontAttribute.Weight weight)
+	{
+		if(name==null||name.isEmpty()||fontFile==null||fontFile.isEmpty())
+		{
+			return null;
+		}
+
+		char styleCode=FontKey.toStyleCode(style);
+		char variantCode=FontKey.toVariantCode(variant);
+		byte weightCode=FontKey.toWeightCode(weight);
+
+		String key=FontKey.makeKey(name,styleCode,variantCode,weightCode);
+
+		if(FONTS_FAMILY.get(key)!=null)
+		{
+			return FONTS_FAMILY.get(key);
+		}
+		else
+		{
+			if(FONTS_PATHS.get(key)!=null)
+			{
+				return new ConchFont(key);
+			}
+			else
+			{
+				return new ConchFont(new File(fontFile),key);
+			}
+		}
+	}
+	
+	//通过资源字体文件，字体名字，风格，形式和权重构造字体。名字是conch风格。安卓专用
+	public static ConchFont create(AssetManager am,String fontFile,String name,ConchFontAttribute.Style style,ConchFontAttribute.Variant variant,ConchFontAttribute.Weight weight)
+	{
+		if(name==null||name.isEmpty()||fontFile==null||fontFile.isEmpty()||am==null)
+		{
+			return null;
+		}
+
+		char styleCode=FontKey.toStyleCode(style);
+		char variantCode=FontKey.toVariantCode(variant);
+		byte weightCode=FontKey.toWeightCode(weight);
+
+		String key=FontKey.makeKey(name,styleCode,variantCode,weightCode);
+
+		if(FONTS_FAMILY.get(key)!=null)
+		{
+			return FONTS_FAMILY.get(key);
+		}
+		else
+		{
+			if(FONTS_PATHS.get(key)!=null)
+			{
+				return new ConchFont(key);
+			}
+			else
+			{
+				return new ConchFont(am,fontFile,key);
 			}
 		}
 	}
